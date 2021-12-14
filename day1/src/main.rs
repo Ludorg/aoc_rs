@@ -42,5 +42,20 @@ fn main() {
     }
     println!("{} ", count);
 
+    // ----------
     // step2
+
+    println!("0: {} (N/A)", vec[0]);
+    let mut prev = 0;
+    index = 0;
+    count = 0;
+    while index < vec.len() - 3 {
+        let sum = vec[index] + vec[index + 1] + vec[index + 2];
+        if sum > prev {
+            count += 1;
+        }
+        index += 1;
+        prev = sum;
+    }
+    println!("{} ", count);
 }
