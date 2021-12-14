@@ -45,7 +45,6 @@ fn main() {
     // ----------
     // step2
 
-    println!("0: {} (N/A)", vec[0]);
     let mut prev = 0;
     index = 0;
     count = 0;
