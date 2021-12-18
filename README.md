@@ -6,7 +6,7 @@
 | :-: | :----: | :----: |
 |  1  |   ⭐    |   ⭐    |
 |  2  |   ⭐    |   ⭐    |
-|  3  |        |        |
+|  3  |   ⭐    |        |
 |  4  |        |        |
 |  5  |        |        |
 
@@ -26,12 +26,12 @@ NB: Puzzle inputs differ by user. Please log in to get your puzzle input.
 
 ### Step 1
 
-```
+```terminal
 aoc2021 day2/step1 = 1840243
 ```
 
 ### Step 2
 
-```
+```terminal
 aoc2021 day2/step2 = 1727785422
 ```
