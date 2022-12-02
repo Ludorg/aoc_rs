@@ -4,8 +4,8 @@
 
 | Day | Step 1 | Step 2 |
 | :-: | :----: | :----: |
-|  1  |   ⭐   |   ⭐   |
-|  2  |  ⭐    |        |
+|  1  | ⭐ | ⭐ |
+|  2  | ⭐ | ⭐ |
 |  3  |        |        |
 |  4  |        |        |
 |  5  |        |        |
@@ -31,5 +31,9 @@ Completed ⭐
 See instructions [here](https://adventofcode.com/2022/day/2)
 
 ### Step 1
+
+Completed ⭐
+
+### Step 2
 
 Completed ⭐
