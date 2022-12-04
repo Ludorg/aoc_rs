@@ -37,3 +37,11 @@ Completed ⭐
 ### Step 2
 
 Completed ⭐
+
+## Day 3
+
+See instructions [here](https://adventofcode.com/2022/day/3)
+
+### Step 1
+
+Completed ⭐
