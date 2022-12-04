@@ -1,4 +1,6 @@
-# Advent of Code 2022 in Rust 🦀
+# [Advent of Code 2022](https://adventofcode.com/2022) in Rust 🦀
+
+
 
 Link to repos of Rustacean colleagues:
 
