@@ -1,3 +1,4 @@
+use std::convert::TryFrom;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
@@ -6,13 +7,13 @@ fn main() {
     let file = File::open(filename).unwrap();
     let reader = BufReader::new(file);
 
-    // vector to store read data
-    //let mut rucksacks: Vec<String> = Vec::new();
+    let mut val: u32 = 0;
 
     for (_index, line) in reader.lines().enumerate() {
         let line = line.unwrap();
-        find_shared_item(split_rucksack(line));
+        val += compute_priority(find_shared_item(split_rucksack(line))) as u32;
     }
+    println!("part1 result={}", val);
 }
 
 struct Rucksack {
@@ -39,8 +40,21 @@ fn find_shared_item(sack: Rucksack) -> char {
     ' '
 }
 
+fn compute_priority(c: char) -> u8 {
+    // let mut ret : i32 = 'a'
+    let offset: u8 = if c.is_uppercase() { 27 } else { 1 };
+    let diff: u8 = if c.is_uppercase() {
+        u8::try_from('A').unwrap()
+    } else {
+        u8::try_from('a').unwrap()
+    };
+
+    u8::try_from(c).unwrap() - diff + offset
+}
+
 #[cfg(test)]
 mod tests {
+    use super::compute_priority;
     use super::find_shared_item;
     use super::split_rucksack;
     use super::Rucksack;
@@ -105,5 +119,39 @@ mod tests {
             find_shared_item(split_rucksack("CrZsJsPPZsGzwwsLwLmpwMDw".to_string())),
             's'
         );
+    }
+
+    #[test]
+    fn part1_priority1() {
+        assert_eq!(compute_priority('a'), 1);
+    }
+
+    #[test]
+    fn part1_priority2() {
+        assert_eq!(compute_priority('A'), 27);
+    }
+    #[test]
+    fn part1_priority3() {
+        assert_eq!(compute_priority('p'), 16);
+    }
+    #[test]
+    fn part1_priority4() {
+        assert_eq!(compute_priority('L'), 38);
+    }
+    #[test]
+    fn part1_priority5() {
+        assert_eq!(compute_priority('P'), 42);
+    }
+    #[test]
+    fn part1_priority6() {
+        assert_eq!(compute_priority('v'), 22);
+    }
+    #[test]
+    fn part1_priority7() {
+        assert_eq!(compute_priority('t'), 20);
+    }
+    #[test]
+    fn part1_priority8() {
+        assert_eq!(compute_priority('s'), 19);
     }
 }
