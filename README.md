@@ -1,6 +1,12 @@
 # Advent of Code 2022 in Rust 🦀
 
-## Advance
+## Link to repos of Rustacean colleagues
+
+[René et al:](https://github.com/rene-d/advent-of-rust/)
+[Philippe/Gueven](https://github.com/pbouamriou/adventofcode_2022_rust)
+
+
+## My Advance
 
 | Day | Step 1 | Step 2 |
 | :-: | :----: | :----: |
