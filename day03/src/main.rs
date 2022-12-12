@@ -3,6 +3,36 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 
 fn main() {
+    part1();
+    part2();
+}
+
+fn part2() {
+    let filename = "input.txt";
+    let file = File::open(filename).unwrap();
+    let reader = BufReader::new(file);
+
+    let mut val: u32 = 0;
+
+    let mut current_group: Vec<String> = vec![String::new(); 3];
+
+    for (index, line) in reader.lines().enumerate() {
+        // input file contains 3*x lines (300 for mine)
+        println!("{}", index % 3,);
+        current_group[index % 3] = line.unwrap();
+        if index % 3 == 2 {
+            find_common_item(&current_group);
+        }
+    }
+
+    println!("part2 result={}", val);
+}
+
+fn find_common_item(group: &Vec<String>) -> char {
+    ' '
+}
+
+fn part1() {
     let filename = "input.txt";
     let file = File::open(filename).unwrap();
     let reader = BufReader::new(file);
