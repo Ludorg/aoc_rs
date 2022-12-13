@@ -18,10 +18,9 @@ fn part2() {
 
     for (index, line) in reader.lines().enumerate() {
         // input file contains 3*x lines (300 for mine)
-        println!("{}", index % 3,);
         current_group[index % 3] = line.unwrap();
         if index % 3 == 2 {
-            find_common_item(&current_group);
+            val += compute_priority(find_common_item(&current_group)) as u32;
         }
     }
 
@@ -29,6 +28,13 @@ fn part2() {
 }
 
 fn find_common_item(group: &Vec<String>) -> char {
+    for c in group[0].chars() {
+        if group[1].find(c) != None {
+            if group[2].find(c) != None {
+                return c;
+            }
+        }
+    }
     ' '
 }
 
