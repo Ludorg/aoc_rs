@@ -54,3 +54,16 @@ Completed ⭐
 ### Step 2
 
 Completed ⭐
+
+---
+
+## Final words
+
+In 2022, I caught one more star than in 2021!
+Despite having begun on time, due to some other emergencies to manage, I could'nt find the time to solve the puzzles. The three ones I completed were coded with  [Codespaces](https://github.com/features/codespaces).
+
+This Advent of Code 2022 in Rust was however really fun to do this with my colleague and friend [@rene-d](https://github.com/rene-d). Next year, I hope to go a little bit further.
+
+![final leader board](./final.jpg)
+
+Happy new Year 2🦀23!
