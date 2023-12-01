@@ -44,7 +44,6 @@ fn calibration_value1(s: &String) -> u32 {
 fn first_digit2(s: &String) -> u32 {
     let mut num_pos = 0;
     let mut num_ret = 0;
-    let mut ret = 0;
     for c in s.chars() {
         if c.is_numeric() {
             num_ret = c.to_digit(10).unwrap();
@@ -52,9 +51,10 @@ fn first_digit2(s: &String) -> u32 {
         }
         num_pos += 1;
     }
+
     let mut vec = Vec::new();
-    //vec.push(usize::MIN);
-    vec.push(s.find("one"));
+
+    vec.push(s.find("one")); // index 0
     vec.push(s.find("two"));
     vec.push(s.find("three"));
     vec.push(s.find("four"));
@@ -79,11 +79,54 @@ fn first_digit2(s: &String) -> u32 {
     }
 
     if min_str_pos > num_pos {
-        ret = num_ret;
+        num_ret
     } else {
-        ret = str_ret;
+        str_ret
     }
-    ret
+}
+
+fn last_digit2(s: &String) -> u32 {
+    let mut num_pos = s.len();
+    let mut num_ret = 0;
+    for c in s.chars().rev() {
+        if c.is_numeric() {
+            num_ret = c.to_digit(10).unwrap();
+            break;
+        }
+        num_pos -= 1;
+    }
+
+    let mut vec = Vec::new();
+    vec.push(s.rfind("one")); // index 0
+    vec.push(s.rfind("two"));
+    vec.push(s.rfind("three"));
+    vec.push(s.rfind("four"));
+    vec.push(s.rfind("five"));
+    vec.push(s.rfind("six"));
+    vec.push(s.rfind("seven"));
+    vec.push(s.rfind("eight"));
+    vec.push(s.rfind("nine"));
+
+    let mut max_str_pos = 0;
+    let mut str_idx = 1;
+    let mut str_ret = 0;
+    for v in vec {
+        if v.is_some() {
+            if v.unwrap() > max_str_pos {
+                max_str_pos = v.unwrap();
+                str_ret = str_idx;
+            }
+            println!("string for number {} is at pos {}", str_idx, v.unwrap());
+            println!("str_ret = {}", str_ret);
+        }
+        str_idx += 1;
+    }
+
+    if max_str_pos < num_pos {
+        num_ret
+    } else {
+        str_ret
+    }
 }
 
 fn string_number_to_int_val(s: &String) -> u32 {
@@ -102,12 +145,37 @@ fn string_number_to_int_val(s: &String) -> u32 {
 }
 
 fn calibration_value2(s: &String) -> u32 {
-    0
+    first_digit2(&s) * 10 + last_digit2(&s)
+}
+
+fn string_find_last_pos(s: &String, pat: &str) -> Option<usize> {
+    s.rfind(&pat)
 }
 
 mod tests {
 
     use super::*;
+
+    #[test]
+    fn test_string_find_last_pos() {
+        assert_eq!(
+            string_find_last_pos(&String::from("abcdefsix"), "six"),
+            Some(6)
+        );
+
+        assert_eq!(
+            string_find_last_pos(&String::from("7pqrstsixteen"), "four"),
+            None
+        );
+        assert_eq!(
+            string_find_last_pos(&String::from("sixteenteen"), "teen"),
+            Some(7)
+        );
+        assert_eq!(
+            string_find_last_pos(&String::from("zzzzccabab"), "ab"),
+            Some(8)
+        );
+    }
 
     #[test]
     fn test_first_digit1() {
@@ -147,5 +215,32 @@ mod tests {
         assert_eq!(first_digit2(&String::from("4nineeightseven2")), 4);
         assert_eq!(first_digit2(&String::from("zoneight234")), 1);
         assert_eq!(first_digit2(&String::from("7pqrstsixteen")), 7);
+    }
+
+    #[test]
+    fn test_last_digit2() {
+        assert_eq!(last_digit2(&String::from("abcone2threexyz")), 3);
+        assert_eq!(last_digit2(&String::from("abcsevenone2threexyz")), 3);
+        assert_eq!(last_digit2(&String::from("two1nine")), 9);
+        assert_eq!(last_digit2(&String::from("1two1nine")), 9);
+        assert_eq!(last_digit2(&String::from("one1two1nine")), 9);
+        assert_eq!(last_digit2(&String::from("two1nine")), 9);
+        assert_eq!(last_digit2(&String::from("eightwothree")), 3);
+        assert_eq!(last_digit2(&String::from("abcone2threexyz")), 3);
+        assert_eq!(last_digit2(&String::from("xtwone3four")), 4);
+        assert_eq!(last_digit2(&String::from("7xtwone3four7")), 7);
+        assert_eq!(last_digit2(&String::from("4nineeightseven2")), 2);
+        assert_eq!(last_digit2(&String::from("zoneight234")), 4);
+        assert_eq!(last_digit2(&String::from("7pqrstsixteen")), 6);
+    }
+    #[test]
+    fn test_calibration_value2() {
+        assert_eq!(calibration_value2(&String::from("two1nine")), 29);
+        assert_eq!(calibration_value2(&String::from("eightwothree")), 83);
+        assert_eq!(calibration_value2(&String::from("abcone2threexyz")), 13);
+        assert_eq!(calibration_value2(&String::from("xtwone3four")), 24);
+        assert_eq!(calibration_value2(&String::from("4nineeightseven2")), 42);
+        assert_eq!(calibration_value2(&String::from("zoneight234")), 14);
+        assert_eq!(calibration_value2(&String::from("7pqrstsixteen")), 76);
     }
 }
