@@ -3,7 +3,9 @@ use regex::Regex;
 use std::cmp;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
+
 fn main() {
+    // set RUST_LOG=info before running
     env_logger::init();
     let filename = "2023/day02/input.txt";
     let file = File::open(filename).unwrap();
@@ -68,7 +70,7 @@ fn read_sets(s: &str) -> Vec<Set> {
 fn split_sets(s: &str) -> Vec<&str> {
     let mut v = Vec::new();
     let start_pos = s.find(": ").unwrap() + 2;
-    let sets = s[start_pos..].split(';');
+    let sets = s[start_pos..].split("; ");
     for set in sets {
         trace!("set = {}", set);
         v.push(set);
@@ -150,6 +152,8 @@ mod tests {
 
     #[test]
     fn test_game_possible() {
+        // set RUST_LOG=trace (or debug) before running
+        env_logger::init();
         assert_eq!(
             is_game_possible(&read_game(
                 "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green"
@@ -192,19 +196,36 @@ mod tests {
     #[test]
     fn test_read_sets() {
         let sets = read_sets("Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green");
+        assert_eq!(sets.len(), 3);
         debug!("{sets:?}");
     }
 
     #[test]
     fn test_read_sets_0() {
         let v = split_sets("Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green");
+        assert_eq!(v[0], "3 blue, 4 red");
+        assert_eq!(v[1], "1 red, 2 green, 6 blue");
+        assert_eq!(v[2], "2 green");
+
         debug!("v={v:?}");
+
         let s1 = string_to_set("1 red, 2 green, 6 blue");
         debug!("{s1:?}");
+        assert_eq!(s1.red, 1);
+        assert_eq!(s1.green, 2);
+        assert_eq!(s1.blue, 6);
+
         let s1 = string_to_set("7 green, 8 blue");
         debug!("{s1:?}");
+        assert_eq!(s1.red, 0);
+        assert_eq!(s1.green, 7);
+        assert_eq!(s1.blue, 8);
+
         let s1 = string_to_set("18 blue, 17 red");
         debug!("{s1:?}");
+        assert_eq!(s1.red, 17);
+        assert_eq!(s1.green, 0);
+        assert_eq!(s1.blue, 18);
 
         for s in v {
             let s2 = string_to_set(s);
@@ -223,6 +244,7 @@ mod tests {
             }],
         };
         debug!("{g1:?}");
+
         let s1 = Set {
             red: 1,
             green: 2,
