@@ -83,9 +83,24 @@ fn string_to_set(s: &str) -> Set {
     set
 }
 
+// true 12 red cubes, 13 green cubes, and 14 blue cubes
+fn is_game_possible(g: Game) -> bool {
+    true
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn test_game_possible() {
+        assert_eq!(
+            is_game_possible(read_game(
+                "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 27 green"
+            )),
+            true
+        );
+    }
+
     #[test]
     fn test_read_id() {
         assert_eq!(
