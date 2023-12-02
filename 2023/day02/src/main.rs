@@ -15,7 +15,7 @@ fn main() {
         let g = read_game(item);
         let b = is_game_possible(&g);
 
-        if b == true {
+        if b {
             id_sum += g.id;
         }
 
@@ -44,7 +44,7 @@ struct Game {
 fn read_game(s: &str) -> Game {
     let id = read_id(s);
     let sets = read_sets(s);
-    Game { id: id, sets: sets }
+    Game { id, sets }
 }
 
 fn read_id(s: &str) -> u32 {
@@ -67,7 +67,7 @@ fn read_sets(s: &str) -> Vec<Set> {
 fn split_sets(s: &str) -> Vec<&str> {
     let mut v = Vec::new();
     let start_pos = s.find(": ").unwrap() + 2;
-    let sets = s[start_pos..].split(";");
+    let sets = s[start_pos..].split(';');
     for set in sets {
         //println!("set = {}", set);
         v.push(set);
@@ -86,13 +86,13 @@ fn string_to_set(s: &str) -> Set {
     let caps = re.captures_iter(s);
 
     for cap in caps.into_iter() {
-        if cap.get(1) != None {
+        if cap.get(1).is_some() {
             set.red = cap[1].parse::<u32>().unwrap();
         }
-        if cap.get(2) != None {
+        if cap.get(2).is_some() {
             set.green = cap[2].parse::<u32>().unwrap();
         }
-        if cap.get(3) != None {
+        if cap.get(3).is_some() {
             set.blue = cap[3].parse::<u32>().unwrap();
         }
     }
