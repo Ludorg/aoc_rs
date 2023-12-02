@@ -8,14 +8,14 @@ fn main() {
     let mut ret2 = 0;
     for (_index, line) in reader.lines().enumerate() {
         let item = &line.unwrap();
-        ret1 += calibration_value1(&item);
-        ret2 += calibration_value2(&item);
+        ret1 += calibration_value1(item);
+        ret2 += calibration_value2(item);
     }
     println!("calibration values sum for part 1 is {}", ret1);
     println!("calibration values sum for part 2 is {}", ret2);
 }
 
-fn first_digit1(s: &String) -> u32 {
+pub fn first_digit1(s: &str) -> u32 {
     let mut ret = 0;
     for c in s.chars() {
         if c.is_numeric() {
@@ -26,7 +26,7 @@ fn first_digit1(s: &String) -> u32 {
     ret
 }
 
-fn last_digit1(s: &String) -> u32 {
+pub fn last_digit1(s: &str) -> u32 {
     let mut ret = 0;
     for c in s.chars().rev() {
         if c.is_numeric() {
@@ -37,11 +37,11 @@ fn last_digit1(s: &String) -> u32 {
     ret
 }
 
-fn calibration_value1(s: &String) -> u32 {
-    first_digit1(&s) * 10 + last_digit1(&s)
+pub fn calibration_value1(s: &str) -> u32 {
+    first_digit1(s) * 10 + last_digit1(s)
 }
 
-fn first_digit2(s: &String) -> u32 {
+pub fn first_digit2(s: &str) -> u32 {
     let mut num_pos = 0;
     let mut num_ret = 0;
     for c in s.chars() {
@@ -52,27 +52,29 @@ fn first_digit2(s: &String) -> u32 {
         num_pos += 1;
     }
 
-    let mut vec = Vec::new();
+    // one is at index 0
+    let vec = vec![
+        s.find("one"),
+        s.find("two"),
+        s.find("three"),
+        s.find("four"),
+        s.find("five"),
+        s.find("six"),
+        s.find("seven"),
+        s.find("eight"),
+        s.find("nine"),
+    ];
 
-    vec.push(s.find("one")); // index 0
-    vec.push(s.find("two"));
-    vec.push(s.find("three"));
-    vec.push(s.find("four"));
-    vec.push(s.find("five"));
-    vec.push(s.find("six"));
-    vec.push(s.find("seven"));
-    vec.push(s.find("eight"));
-    vec.push(s.find("nine"));
     let mut min_str_pos = s.len();
     let mut str_idx = 1;
     let mut str_ret = 0;
     for v in vec {
-        if v.is_some() {
-            if v.unwrap() < min_str_pos {
-                min_str_pos = v.unwrap();
+        if let Some(val) = v {
+            if val < min_str_pos {
+                min_str_pos = val;
                 str_ret = str_idx;
             }
-            println!("string for number {} is at pos {}", str_idx, v.unwrap());
+            println!("string for number {} is at pos {}", str_idx, val);
             println!("str_ret = {}", str_ret);
         }
         str_idx += 1;
@@ -85,7 +87,7 @@ fn first_digit2(s: &String) -> u32 {
     }
 }
 
-fn last_digit2(s: &String) -> u32 {
+pub fn last_digit2(s: &str) -> u32 {
     let mut num_pos = s.len();
     let mut num_ret = 0;
     for c in s.chars().rev() {
@@ -96,27 +98,28 @@ fn last_digit2(s: &String) -> u32 {
         num_pos -= 1;
     }
 
-    let mut vec = Vec::new();
-    vec.push(s.rfind("one")); // index 0
-    vec.push(s.rfind("two"));
-    vec.push(s.rfind("three"));
-    vec.push(s.rfind("four"));
-    vec.push(s.rfind("five"));
-    vec.push(s.rfind("six"));
-    vec.push(s.rfind("seven"));
-    vec.push(s.rfind("eight"));
-    vec.push(s.rfind("nine"));
+    let vec = vec![
+        s.rfind("one"),
+        s.rfind("two"),
+        s.rfind("three"),
+        s.rfind("four"),
+        s.rfind("five"),
+        s.rfind("six"),
+        s.rfind("seven"),
+        s.rfind("eight"),
+        s.rfind("nine"),
+    ];
 
     let mut max_str_pos = 0;
     let mut str_idx = 1;
     let mut str_ret = 0;
     for v in vec {
-        if v.is_some() {
-            if v.unwrap() > max_str_pos {
-                max_str_pos = v.unwrap();
+        if let Some(val) = v {
+            if val > max_str_pos {
+                max_str_pos = val;
                 str_ret = str_idx;
             }
-            println!("string for number {} is at pos {}", str_idx, v.unwrap());
+            println!("string for number {} is at pos {}", str_idx, val);
             println!("str_ret = {}", str_ret);
         }
         str_idx += 1;
@@ -129,8 +132,8 @@ fn last_digit2(s: &String) -> u32 {
     }
 }
 
-fn string_number_to_int_val(s: &String) -> u32 {
-    match s.as_str() {
+pub fn string_number_to_int_val(s: &str) -> u32 {
+    match s {
         "one" => 1,
         "two" => 2,
         "three" => 3,
@@ -144,17 +147,18 @@ fn string_number_to_int_val(s: &String) -> u32 {
     }
 }
 
-fn calibration_value2(s: &String) -> u32 {
-    first_digit2(&s) * 10 + last_digit2(&s)
+pub fn calibration_value2(s: &str) -> u32 {
+    first_digit2(s) * 10 + last_digit2(s)
 }
 
-fn string_find_last_pos(s: &String, pat: &str) -> Option<usize> {
+pub fn string_find_last_pos(s: &str, pat: &str) -> Option<usize> {
     s.rfind(&pat)
 }
 
+#[cfg(test)]
 mod tests {
 
-    use super::*;
+    use crate::*;
 
     #[test]
     fn test_string_find_last_pos() {
