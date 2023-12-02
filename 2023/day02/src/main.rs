@@ -1,5 +1,5 @@
 use regex::Regex;
-use std::fmt;
+use std::cmp;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
@@ -9,16 +9,23 @@ fn main() {
     let reader = BufReader::new(file);
 
     let mut id_sum = 0;
+    let mut power_sum = 0;
     for (_index, line) in reader.lines().enumerate() {
         let item = &line.unwrap();
         let g = read_game(item);
         let b = is_game_possible(&g);
+
         if b == true {
             id_sum += g.id;
         }
-        println!("game {g:?} is possible = {b}");
+
+        let p = power_of_set(&g);
+        power_sum += p;
+
+        println!("game {g:?} is possible = {b} / power of set is {p}");
     }
     println!("part 1 = {id_sum}");
+    println!("part 2 = {power_sum}");
 }
 
 #[derive(Debug)]
@@ -103,18 +110,46 @@ fn is_game_possible(g: &Game) -> bool {
     true
 }
 
+fn power_of_set(g: &Game) -> u32 {
+    let mut red_max = 0;
+    let mut blue_max = 0;
+    let mut green_max = 0;
+    for s in &g.sets {
+        red_max = cmp::max(s.red, red_max);
+        blue_max = cmp::max(s.blue, blue_max);
+        green_max = cmp::max(s.green, green_max);
+    }
+    red_max * blue_max * green_max
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     #[test]
-    fn test_game_possible() {
+    fn test_power_of_set() {
         assert_eq!(
-            is_game_possible(&read_game(
-                "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 7 green"
+            power_of_set(&read_game(
+                "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green"
             )),
-            true
+            48
+        );
+        assert_eq!(
+            power_of_set(&read_game(
+                "Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue"
+            )),
+            12
         );
 
+        assert_eq!(
+            power_of_set(&read_game(
+                "Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red"
+            )),
+            1560
+        );
+    }
+
+    #[test]
+    fn test_game_possible() {
         assert_eq!(
             is_game_possible(&read_game(
                 "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green"
