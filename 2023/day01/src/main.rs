@@ -1,6 +1,8 @@
+use log::{debug, info};
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 fn main() {
+    env_logger::init();
     let filename = "2023/day01/input.txt";
     let file = File::open(filename).unwrap();
     let reader = BufReader::new(file);
@@ -11,8 +13,8 @@ fn main() {
         ret1 += calibration_value1(item);
         ret2 += calibration_value2(item);
     }
-    println!("calibration values sum for part 1 is {}", ret1);
-    println!("calibration values sum for part 2 is {}", ret2);
+    info!("calibration values sum for part 1 is {}", ret1);
+    info!("calibration values sum for part 2 is {}", ret2);
 }
 
 pub fn first_digit1(s: &str) -> u32 {
@@ -74,8 +76,8 @@ pub fn first_digit2(s: &str) -> u32 {
                 min_str_pos = val;
                 str_ret = str_idx;
             }
-            println!("string for number {} is at pos {}", str_idx, val);
-            println!("str_ret = {}", str_ret);
+            debug!("string for number {} is at pos {}", str_idx, val);
+            debug!("str_ret = {}", str_ret);
         }
         str_idx += 1;
     }
@@ -119,8 +121,8 @@ pub fn last_digit2(s: &str) -> u32 {
                 max_str_pos = val;
                 str_ret = str_idx;
             }
-            println!("string for number {} is at pos {}", str_idx, val);
-            println!("str_ret = {}", str_ret);
+            debug!("string for number {} is at pos {}", str_idx, val);
+            debug!("str_ret = {}", str_ret);
         }
         str_idx += 1;
     }
