@@ -8,7 +8,17 @@ fn main() {
     let file = File::open(filename).unwrap();
     let reader = BufReader::new(file);
 
-    for (_index, line) in reader.lines().enumerate() {}
+    let mut id_sum = 0;
+    for (_index, line) in reader.lines().enumerate() {
+        let item = &line.unwrap();
+        let g = read_game(item);
+        let b = is_game_possible(&g);
+        if b == true {
+            id_sum += g.id;
+        }
+        println!("game {g:?} is possible = {b}");
+    }
+    println!("part 1 = {id_sum}");
 }
 
 #[derive(Debug)]
@@ -41,7 +51,7 @@ fn read_sets(s: &str) -> Vec<Set> {
     let mut sets = Vec::new();
     for s in v {
         let set = string_to_set(s);
-        println!("in string {set:?}");
+        //println!("in string {set:?}");
         sets.push(set);
     }
     sets
@@ -52,7 +62,7 @@ fn split_sets(s: &str) -> Vec<&str> {
     let start_pos = s.find(": ").unwrap() + 2;
     let sets = s[start_pos..].split(";");
     for set in sets {
-        println!("set = {}", set);
+        //println!("set = {}", set);
         v.push(set);
     }
     v
@@ -83,9 +93,17 @@ fn string_to_set(s: &str) -> Set {
     set
 }
 
-// true 12 red cubes, 13 green cubes, and 14 blue cubes
-fn is_game_possible(g: Game) -> bool {
-    true
+// true if less than 12 red cubes, 13 green cubes, and 14 blue cubes
+fn is_game_possible(g: &Game) -> bool {
+    let mut red = 0;
+    let mut green = 0;
+    let mut blue = 0;
+    for s in &g.sets {
+        red += s.red;
+        green += s.green;
+        blue += s.blue;
+    }
+    (red <= 12) & (green <= 13) & (blue <= 14)
 }
 
 #[cfg(test)]
@@ -94,8 +112,39 @@ mod tests {
     #[test]
     fn test_game_possible() {
         assert_eq!(
-            is_game_possible(read_game(
-                "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 27 green"
+            is_game_possible(&read_game(
+                "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 7 green"
+            )),
+            true
+        );
+
+        assert_eq!(
+            is_game_possible(&read_game(
+                "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green"
+            )),
+            true
+        );
+        assert_eq!(
+            is_game_possible(&read_game(
+                "Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue"
+            )),
+            true
+        );
+        assert_eq!(
+            is_game_possible(&read_game(
+                "Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red"
+            )),
+            false
+        );
+        assert_eq!(
+            is_game_possible(&read_game(
+                "Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red"
+            )),
+            false
+        );
+        assert_eq!(
+            is_game_possible(&read_game(
+                "Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green"
             )),
             true
         );
