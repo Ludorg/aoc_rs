@@ -93,17 +93,14 @@ fn string_to_set(s: &str) -> Set {
     set
 }
 
-// true if less than 12 red cubes, 13 green cubes, and 14 blue cubes
+// true if less than 12 red cubes, 13 green cubes, and 14 blue cubes in each set for a game
 fn is_game_possible(g: &Game) -> bool {
-    let mut red = 0;
-    let mut green = 0;
-    let mut blue = 0;
     for s in &g.sets {
-        red += s.red;
-        green += s.green;
-        blue += s.blue;
+        if (s.red > 12) | (s.green > 13) | (s.blue > 14) {
+            return false;
+        }
     }
-    (red <= 12) & (green <= 13) & (blue <= 14)
+    true
 }
 
 #[cfg(test)]
