@@ -1,9 +1,10 @@
+use log::{debug, info, trace};
 use regex::Regex;
 use std::cmp;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
-
 fn main() {
+    env_logger::init();
     let filename = "2023/day02/input.txt";
     let file = File::open(filename).unwrap();
     let reader = BufReader::new(file);
@@ -22,10 +23,10 @@ fn main() {
         let p = power_of_set(&g);
         power_sum += p;
 
-        println!("game {g:?} is possible = {b} / power of set is {p}");
+        debug!("game {g:?} is possible = {b} / power of set is {p}");
     }
-    println!("part 1 = {id_sum}");
-    println!("part 2 = {power_sum}");
+    info!("part 1 = {id_sum}");
+    info!("part 2 = {power_sum}");
 }
 
 #[derive(Debug)]
@@ -58,7 +59,7 @@ fn read_sets(s: &str) -> Vec<Set> {
     let mut sets = Vec::new();
     for s in v {
         let set = string_to_set(s);
-        //println!("in string {set:?}");
+        trace!("in string {set:?}");
         sets.push(set);
     }
     sets
@@ -69,7 +70,7 @@ fn split_sets(s: &str) -> Vec<&str> {
     let start_pos = s.find(": ").unwrap() + 2;
     let sets = s[start_pos..].split(';');
     for set in sets {
-        //println!("set = {}", set);
+        trace!("set = {}", set);
         v.push(set);
     }
     v
@@ -96,7 +97,6 @@ fn string_to_set(s: &str) -> Set {
             set.blue = cap[3].parse::<u32>().unwrap();
         }
     }
-
     set
 }
 
@@ -192,23 +192,23 @@ mod tests {
     #[test]
     fn test_read_sets() {
         let sets = read_sets("Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green");
-        println!("{sets:?}");
+        debug!("{sets:?}");
     }
 
     #[test]
     fn test_read_sets_0() {
         let v = split_sets("Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green");
-        println!("v={v:?}");
+        debug!("v={v:?}");
         let s1 = string_to_set("1 red, 2 green, 6 blue");
-        println!("{s1:?}");
+        debug!("{s1:?}");
         let s1 = string_to_set("7 green, 8 blue");
-        println!("{s1:?}");
+        debug!("{s1:?}");
         let s1 = string_to_set("18 blue, 17 red");
-        println!("{s1:?}");
+        debug!("{s1:?}");
 
         for s in v {
             let s2 = string_to_set(s);
-            println!("in string {s2:?}");
+            debug!("in string {s2:?}");
         }
     }
 
@@ -222,13 +222,13 @@ mod tests {
                 blue: 6,
             }],
         };
-        println!("{g1:?}");
+        debug!("{g1:?}");
         let s1 = Set {
             red: 1,
             green: 2,
             blue: 3,
         };
-        println!("{s1:?}");
+        debug!("{s1:?}");
 
         let g2 = read_game("Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 27 green");
 
