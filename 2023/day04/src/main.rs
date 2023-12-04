@@ -35,6 +35,67 @@
 
 // Take a seat in the large pile of colorful cards. How many points are they worth in total?
 
+use regex::Regex;
+
 fn main() {
     println!("Hello, world!");
+}
+
+pub fn get_card_id(s : &str) -> u32 {
+    let re = Regex::new(r"Card (\d*):").unwrap();
+    let caps = re.captures(s).unwrap();
+    caps[1].parse::<u32>().unwrap()
+}
+
+pub fn get_numbers(s : &str) -> Vec<u32> {    
+    let idx = s.find("|").unwrap();
+    let v = s[idx+1..].split(" ");
+    let mut ret = vec![];
+    for n in v {        
+        if !n.trim().is_empty()  { 
+            println!("n={n}");
+            let val : u32 = n.parse::<u32>().unwrap();
+            ret.push(val);
+        }
+    }
+    ret
+    
+}
+
+pub fn get_winning_numbers(s : &str) -> Vec<u32> {
+    let start_idx = s.find(": ").unwrap()+2;
+    let end_idx = s.find("|").unwrap()-1;
+    let v = s[start_idx..end_idx].split(" ");
+    let mut ret = vec![];
+    for n in v {        
+        if !n.trim().is_empty()  { 
+            println!("n={n}");
+            let val : u32 = n.parse::<u32>().unwrap();
+            ret.push(val);
+        }
+    }
+    ret    
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn test_get_card_id() {
+        assert_eq!(get_card_id("Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53"), 1);
+        assert_eq!(get_card_id("Card 2: 13 32 20 16 61 | 61 30 68 82 17 32 24 19"), 2);        
+    }
+    #[test]
+    fn test_get_numbers() {
+        let v = get_numbers("Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53");
+        let sample = vec![83, 86,  6, 31, 17,  9, 48, 53];
+        assert_eq!(v, sample);        
+    }
+
+    #[test]
+    fn test_get_winning_numbers() {
+        let v = get_winning_numbers("Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53");
+        let sample = vec![41, 48, 83, 86, 17];
+        assert_eq!(v, sample);        
+    }
 }

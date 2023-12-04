@@ -6,3 +6,6 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+env_logger = { version = "0.10.1", registry = "artifactory-remote" }
+log = { version = "0.4.20", registry = "artifactory-remote" }
+regex = { version = "1.10.2", registry = "artifactory-remote" }
