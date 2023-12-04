@@ -75,15 +75,39 @@ fn main() {
 
 struct Game {
     remaining_cards: Vec<u32>,
+    loaded_data: Vec<LoadedData>,
+}
+struct LoadedData {
+    card_id: u32,
+    winning_numbers: Vec<u32>,
+    numbers: Vec<u32>,
 }
 
 impl Game {
     fn new() -> Self {
         Self {
-            remaining_cards: vec![0],
-        } // index 0
+            remaining_cards: vec![0], // index 0 contains 0
+            loaded_data: vec![],
+        }
     }
-    fn load(&self, filename: &str) {}
+    fn load(&mut self, filename: &str) {
+        println!("load");
+        let file = File::open(filename).unwrap();
+        let reader = BufReader::new(file);
+
+        for (_index, line) in reader.lines().enumerate() {
+            let item = &line.unwrap();
+            let mut d: LoadedData = LoadedData {
+                card_id: 0,
+                winning_numbers: vec![],
+                numbers: vec![],
+            };
+            d.winning_numbers = get_winning_numbers(item);
+            d.numbers = get_numbers(item);
+            d.card_id = get_card_id(item);
+            self.loaded_data.push(d);
+        }
+    }
 }
 
 pub fn get_card_id(s: &str) -> u32 {
@@ -201,5 +225,21 @@ mod tests {
             sum += get_points(item);
         }
         assert_eq!(sum, 13);
+    }
+
+    #[test]
+    fn test_game_load() {
+        let mut g = Game::new();
+        g.load("test.txt");
+
+        let sample1 = vec![41, 48, 83, 86, 17];
+        assert_eq!(g.loaded_data[0].card_id, 1);
+        assert_eq!(g.loaded_data[0].winning_numbers, sample1);
+
+        let sample2 = vec![61, 30, 68, 82, 17, 32, 24, 19];
+        assert_eq!(g.loaded_data[1].card_id, 2);
+        assert_eq!(g.loaded_data[1].numbers, sample2);
+
+        assert_eq!(g.remaining_cards[0], 0);
     }
 }
