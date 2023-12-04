@@ -73,6 +73,19 @@ fn main() {
     info!("{sum}");
 }
 
+struct Game {
+    remaining_cards : Vec<u32>,
+}
+
+impl Game {
+    fn new() -> Self {
+        Self { remaining_cards: vec![0] } // index 0
+    }
+    fn load(&self, filename: &str) {
+        
+    }
+}
+
 pub fn get_card_id(s: &str) -> u32 {
     let re = Regex::new(r"Card (\d*):").unwrap();
     let caps = re.captures(s).unwrap();
@@ -161,6 +174,22 @@ mod tests {
 
     #[test]
     fn test_get_points_file() {
+        env_logger::init();
+        let filename = "test.txt";
+        let file = File::open(filename).unwrap();
+        let reader = BufReader::new(file);
+
+        let mut sum = 0;
+
+        for (_index, line) in reader.lines().enumerate() {
+            let item = &line.unwrap();
+            sum += get_points(item);
+        }
+        assert_eq!(sum, 13);
+    }
+
+    #[test]
+    fn test_total_scratchcards_file() {
         env_logger::init();
         let filename = "test.txt";
         let file = File::open(filename).unwrap();
