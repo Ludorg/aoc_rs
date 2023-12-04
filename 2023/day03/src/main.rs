@@ -1,5 +1,4 @@
 use log::{debug, info, trace};
-use core::num;
 use std::char;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
@@ -9,7 +8,7 @@ fn main() {
     env_logger::init();
     let s = load_schematic("2023/day03/input.txt");
     let sum = compute_part_numbers(&s);
-    println!("{sum}")
+    info!("{sum}")
 }
 
 pub struct Schematic {
@@ -26,17 +25,15 @@ impl Schematic {
         (self.data[0].len(), self.data.len())
     }
     fn char_at(&self, x: i32, y: i32) -> char {
-        let (dx, dy) = self.dimensions();        
+        let (dx, dy) = self.dimensions();
         if (x >= 0) & ((x as usize) < dx) & (y >= 0) & ((y as usize) < dy) {
-            
             let c = self.data[y as usize].chars().nth(x as usize).unwrap();
             trace!("char_at [{x},{y}]='{c}'");
             c
-        }
-        else  {
+        } else {
             trace!("char_at [{x},{y}]='.'");
-            '.'    
-        }        
+            '.'
+        }
     }
     fn is_digit_adjacent_to_symbol(&self, x: i32, y: i32) -> bool {
         // x+1, y
@@ -48,7 +45,7 @@ impl Schematic {
         // x+1, y-1
             | is_symbol(self.char_at(x-1, y-1))
             | is_symbol(self.char_at(x, y-1))
-            | is_symbol(self.char_at(x+1, y-1))            
+            | is_symbol(self.char_at(x+1, y-1))
         // x-1, y+1
         // x, y+1
         // x+1, y+1
@@ -59,12 +56,8 @@ impl Schematic {
 }
 
 pub fn is_symbol(c: char) -> bool {
-    if c.is_digit(10) {
+    if c.is_ascii_digit() | (c == '.') {
         return false;
-    } else {
-        if c == '.' {
-            return false;
-        }
     }
     true
 }
@@ -76,26 +69,25 @@ pub fn compute_part_numbers(s: &Schematic) -> u32 {
     let mut number_found = false;
     for y in 0..dy {
         let mut number = 0;
-        for x in 0..dx {                        
+        for x in 0..dx {
             // if current char is digit
-            if s.char_at(x as i32, y as i32).is_digit(10) {
+            if s.char_at(x as i32, y as i32).is_ascii_digit() {
                 number_found = true;
                 let digit = s.char_at(x as i32, y as i32).to_digit(10).unwrap();
                 // println!("digit={digit}");
-                number = number * 10 + digit;                
+                number = number * 10 + digit;
                 if s.is_digit_adjacent_to_symbol(x as i32, y as i32) {
                     adjacent = true;
                 }
             } else {
                 // this is not a digit, check if ending a number
-                if number_found {            
-                    print!("number={number}");        
+                if number_found {
+                    debug!("number={number}");
                     if adjacent {
                         sum += number;
-                        println!(" is adjacent to a symbol");
-                    }
-                    else {
-                        println!(" is NOT adjacent to a symbol");
+                        debug!(" is adjacent to a symbol");
+                    } else {
+                        debug!(" is NOT adjacent to a symbol");
                     }
                     number_found = false;
                     adjacent = false;
@@ -103,16 +95,15 @@ pub fn compute_part_numbers(s: &Schematic) -> u32 {
                 }
             }
             // special case for end of line
-            if x == dx-1 {
+            if x == dx - 1 {
                 print!("at end of line ");
-                if number_found {            
-                    print!("number={number}");        
+                if number_found {
+                    debug!("number={number}");
                     if adjacent {
                         sum += number;
-                        println!(" is adjacent to a symbol");
-                    }
-                    else {
-                        println!(" is NOT adjacent to a symbol");
+                        debug!(" is adjacent to a symbol");
+                    } else {
+                        debug!(" is NOT adjacent to a symbol");
                     }
                 }
                 number_found = false;
@@ -164,7 +155,7 @@ mod tests {
     }
 
     #[test]
-    fn test_adjacent_digits() {        
+    fn test_adjacent_digits() {
         let s = load_schematic("test.txt");
         //   0123456789
         // 0 467..114..
@@ -176,8 +167,8 @@ mod tests {
         // 6 ..592.....
         // 7 ......755.
         // 8 ...$.*....
-        // 9 .664.598..        
-        
+        // 9 .664.598..
+
         assert_eq!(s.is_digit_adjacent_to_symbol(5, 0), false); // '1' of 114
         assert_eq!(s.is_digit_adjacent_to_symbol(6, 0), false); // second '1' of 114
         assert_eq!(s.is_digit_adjacent_to_symbol(7, 0), false); // '4' of 114
@@ -197,11 +188,9 @@ mod tests {
 
     #[test]
     fn test_compute_part_numbers_find_bug() {
-        env_logger::init();
         let s = load_schematic("test_bug.txt");
         compute_part_numbers(&s);
     }
-
 }
 
 //fn is_adjdacent
