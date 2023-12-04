@@ -74,7 +74,7 @@ pub fn compute_part_numbers(s: &Schematic) -> u32 {
             if s.char_at(x as i32, y as i32).is_ascii_digit() {
                 number_found = true;
                 let digit = s.char_at(x as i32, y as i32).to_digit(10).unwrap();
-                // println!("digit={digit}");
+                trace!("digit={digit}");
                 number = number * 10 + digit;
                 if s.is_digit_adjacent_to_symbol(x as i32, y as i32) {
                     adjacent = true;
@@ -82,12 +82,11 @@ pub fn compute_part_numbers(s: &Schematic) -> u32 {
             } else {
                 // this is not a digit, check if ending a number
                 if number_found {
-                    debug!("number={number}");
                     if adjacent {
                         sum += number;
-                        debug!(" is adjacent to a symbol");
+                        debug!("number={number} is adjacent to a symbol");
                     } else {
-                        debug!(" is NOT adjacent to a symbol");
+                        debug!("number={number} is NOT adjacent to a symbol");
                     }
                     number_found = false;
                     adjacent = false;
@@ -96,14 +95,12 @@ pub fn compute_part_numbers(s: &Schematic) -> u32 {
             }
             // special case for end of line
             if x == dx - 1 {
-                print!("at end of line ");
                 if number_found {
-                    debug!("number={number}");
                     if adjacent {
                         sum += number;
-                        debug!(" is adjacent to a symbol");
+                        debug!("at end of line number={number} is adjacent to a symbol");
                     } else {
-                        debug!(" is NOT adjacent to a symbol");
+                        debug!("at end of line number={number} is NOT adjacent to a symbol");
                     }
                 }
                 number_found = false;
