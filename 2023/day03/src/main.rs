@@ -76,8 +76,7 @@ pub fn compute_part_numbers(s: &Schematic) -> u32 {
     let mut number_found = false;
     for y in 0..dy {
         let mut number = 0;
-        for x in 0..dx {
-                        
+        for x in 0..dx {                        
             // if current char is digit
             if s.char_at(x as i32, y as i32).is_digit(10) {
                 number_found = true;
@@ -101,8 +100,25 @@ pub fn compute_part_numbers(s: &Schematic) -> u32 {
                     number_found = false;
                     adjacent = false;
                     number = 0;
-                }   
-            }   
+                }
+            }
+            // special case for end of line
+            if x == dx-1 {
+                print!("at end of line ");
+                if number_found {            
+                    print!("number={number}");        
+                    if adjacent {
+                        sum += number;
+                        println!(" is adjacent to a symbol");
+                    }
+                    else {
+                        println!(" is NOT adjacent to a symbol");
+                    }
+                }
+                number_found = false;
+                adjacent = false;
+                number = 0;
+            }
         }
     }
     sum
@@ -177,6 +193,13 @@ mod tests {
         env_logger::init();
         let s = load_schematic("test.txt");
         assert_eq!(compute_part_numbers(&s), 4361);
+    }
+
+    #[test]
+    fn test_compute_part_numbers_find_bug() {
+        env_logger::init();
+        let s = load_schematic("test_bug.txt");
+        compute_part_numbers(&s);
     }
 
 }
