@@ -52,6 +52,7 @@
 
 // Process all of the original and copied scratchcards until no more scratchcards are won. Including the original set of scratchcards, how many total scratchcards do you end up with?
 
+use log::{debug, info, trace};
 use regex::Regex;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
@@ -69,7 +70,7 @@ fn main() {
         let item = &line.unwrap();
         sum += get_points(item);
     }
-    println!("{sum}");
+    info!("{sum}");
 }
 
 pub fn get_card_id(s: &str) -> u32 {
@@ -84,7 +85,7 @@ pub fn get_numbers(s: &str) -> Vec<u32> {
     let mut ret = vec![];
     for n in v {
         if !n.trim().is_empty() {
-            println!("n={n}");
+            trace!("n={n}");
             let val: u32 = n.parse::<u32>().unwrap();
             ret.push(val);
         }
@@ -99,7 +100,7 @@ pub fn get_winning_numbers(s: &str) -> Vec<u32> {
     let mut ret = vec![];
     for n in v {
         if !n.trim().is_empty() {
-            println!("n={n}");
+            trace!("n={n}");
             let val: u32 = n.parse::<u32>().unwrap();
             ret.push(val);
         }
@@ -113,7 +114,7 @@ pub fn get_points(s: &str) -> u32 {
     let mut nb_wins = 0;
     for n in nums {
         if wins.iter().any(|&i| i == n) {
-            println!("{n} is winning");
+            debug!("{n} is winning");
             nb_wins += 1;
         }
     }
