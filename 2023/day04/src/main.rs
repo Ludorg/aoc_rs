@@ -80,8 +80,8 @@ pub fn get_card_id(s: &str) -> u32 {
 }
 
 pub fn get_numbers(s: &str) -> Vec<u32> {
-    let idx = s.find("|").unwrap();
-    let v = s[idx + 1..].split(" ");
+    let idx = s.find('|').unwrap();
+    let v = s[idx + 1..].split(' ');
     let mut ret = vec![];
     for n in v {
         if !n.trim().is_empty() {
@@ -95,8 +95,8 @@ pub fn get_numbers(s: &str) -> Vec<u32> {
 
 pub fn get_winning_numbers(s: &str) -> Vec<u32> {
     let start_idx = s.find(": ").unwrap() + 2;
-    let end_idx = s.find("|").unwrap() - 1;
-    let v = s[start_idx..end_idx].split(" ");
+    let end_idx = s.find('|').unwrap() - 1;
+    let v = s[start_idx..end_idx].split(' ');
     let mut ret = vec![];
     for n in v {
         if !n.trim().is_empty() {
