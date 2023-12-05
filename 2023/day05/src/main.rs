@@ -1,16 +1,39 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
+#[derive(Debug)]
 pub struct Almanac {
     seeds: Vec<u64>,
     maps: Vec<Vec<Range>>,
     maps_name: Vec<String>,
 }
 
+#[derive(Debug)]
 struct Range {
     destination_start: u64,
     source_start: u64,
     length: u64,
+}
+
+impl Range {
+    fn new(s: &str) -> Self {
+        let v = s.split(' ');
+        let mut rv = [0, 0, 0];
+        let mut idx_rv = 0;
+
+        for r in v {
+            if !r.trim().is_empty() {
+                rv[idx_rv] = r.parse::<u64>().unwrap();
+                idx_rv += 1;
+            }
+        }
+
+        Range {
+            destination_start: rv[0],
+            source_start: rv[1],
+            length: rv[2],
+        }
+    }
 }
 
 impl Almanac {
@@ -62,8 +85,8 @@ impl Almanac {
         for s in self.seeds.iter() {
             print!(" {}", &s);
         }
-        println!("");
-        println!("");
+        println!();
+        println!();
         let mut idx = 0;
         for m in self.maps.iter() {
             println!("{} map:", self.maps_name[idx]);
@@ -72,36 +95,43 @@ impl Almanac {
             }
             idx += 1;
             if idx < self.maps_name.len() {
-                println!("");
+                println!();
             }
         }
     }
-}
+    fn min_location(&self) -> u64 {
+        let mut min = u64::MAX;
+        for seed in self.seeds.clone() {
+            let mut current = seed;
 
-impl Range {
-    fn new(s: &str) -> Self {
-        let v = s.split(' ');
-        let mut rv = [0, 0, 0];
-        let mut idx_rv = 0;
-
-        for r in v {
-            if !r.trim().is_empty() {
-                rv[idx_rv] = r.parse::<u64>().unwrap();
-                idx_rv += 1;
+            'maps: for map in &self.maps {
+                for range in map {
+                    let range_end = range.source_start + range.length;
+                    let range_source = range.source_start;
+                    let range_destination = range.destination_start;
+                    if current >= range_source && current <= range_end {
+                        let offset = current - range_source;
+                        current = range_destination + offset;
+                        continue 'maps;
+                    }
+                }
             }
+            min = min.min(current);
         }
-
-        Range {
-            destination_start: rv[0],
-            source_start: rv[1],
-            length: rv[2],
-        }
+        min
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn test_min_location() {
+        let mut a = Almanac::new();
+        a.load("example.txt");
+        assert_eq!(a.min_location(), 35);
+    }
+
     #[test]
     fn test_load_seeds() {
         let mut a = Almanac::new();
@@ -145,7 +175,12 @@ mod tests {
         assert_eq!(a.maps[2][0].destination_start, 49);
         assert_eq!(a.maps[2][1].destination_start, 0);
         assert_eq!(a.maps[2][2].destination_start, 42);
-        a.print();
+
+        a.print(); // used to check if identical with example file
+
+        println!("seeds {:?}", &a.seeds);
+        println!("maps {:?}", &a.maps);
+        println!("almanac {:?}", &a);
     }
 
     #[test]
@@ -166,5 +201,7 @@ fn main() {
         "0/0_dst={}, 0/0_src={}, 0/0_len={}",
         a.maps[0][0].destination_start, a.maps[0][0].source_start, a.maps[0][0].length
     );
-    a.print();
+    a.print(); // to check if identical with input file
+
+    println!("day5/part1={}", a.min_location());
 }
