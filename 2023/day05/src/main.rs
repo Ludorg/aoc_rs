@@ -5,8 +5,12 @@ pub struct Almanac {
     seeds: Vec<u32>,
     maps: Vec<Vec<Range>>,
     maps_name: Vec<String>,
-    // seed_to_soil: Vec<Range>,
-    // soil_to_fertilizer: Vec<Range>, // ...
+}
+
+struct Range {
+    destination_start: u32,
+    source_start: u32,
+    length: u32,
 }
 
 impl Almanac {
@@ -15,8 +19,6 @@ impl Almanac {
             seeds: vec![],
             maps: vec![],
             maps_name: vec![],
-            // seed_to_soil: vec![],
-            // soil_to_fertilizer: vec![],
         }
     }
     fn load(&mut self, filename: &str) {
@@ -30,11 +32,14 @@ impl Almanac {
                 self.load_seeds(&item);
             } else {
                 let map_kw = item.find(" map:");
-                if map_kw.is_some() {
-                    let name = item[0..map_kw.unwrap()].to_string();
-                    self.maps_name.push(name);
-                    //println!("[{&name}]/pos={maps_counter}");
+                if let Some(sub_idx) = map_kw {
                     maps_counter += 1;
+                    let name = item[0..sub_idx].to_string();
+                    println!("[{}]/pos={maps_counter}", &name);
+                    self.maps_name.push(name);
+                    self.maps.push(vec![]);
+                } else if !item.is_empty() {
+                    self.maps[maps_counter - 1].push(Range::new(&item)); // to start at index 0
                 }
             }
         }
@@ -52,18 +57,23 @@ impl Almanac {
     }
 }
 
-struct Range {
-    destination_start: u32,
-    source_start: u32,
-    length: u32,
-}
-
 impl Range {
     fn new(s: &str) -> Self {
+        let v = s.split(' ');
+        let mut rv = [0, 0, 0];
+        let mut idx_rv = 0;
+
+        for r in v {
+            if !r.trim().is_empty() {
+                rv[idx_rv] = r.parse::<u32>().unwrap();
+                idx_rv += 1;
+            }
+        }
+
         Range {
-            destination_start: 1,
-            source_start: 2,
-            length: 3,
+            destination_start: rv[0],
+            source_start: rv[1],
+            length: rv[2],
         }
     }
 }
@@ -86,11 +96,22 @@ mod tests {
         let mut a = Almanac::new();
         a.load("example.txt");
         assert_eq!(a.maps_name.len(), 7); // 7 maps
-        assert_eq!(a.maps_name.len(), 7);
-        assert_eq!(a.maps_name.len(), 7);
         assert_eq!(a.maps_name[0], "seed-to-soil");
         assert_eq!(a.maps_name[1], "soil-to-fertilizer");
         assert_eq!(a.maps_name[6], "humidity-to-location");
+    }
+
+    #[test]
+    fn test_load_map_ranges() {
+        let mut a = Almanac::new();
+        a.load("example.txt");
+
+        assert_eq!(a.maps.len(), 7);
+        assert_eq!(a.maps[0][0].destination_start, 50);
+        assert_eq!(a.maps[1][0].destination_start, 0);
+        assert_eq!(a.maps[2][0].destination_start, 49);
+        assert_eq!(a.maps[2][1].destination_start, 0);
+        assert_eq!(a.maps[2][2].destination_start, 42);
     }
 
     #[test]
@@ -100,11 +121,15 @@ mod tests {
         assert_eq!(r.destination_start, 50);
         assert_eq!(r.source_start, 98);
         assert_eq!(r.length, 2);
-        
     }
 }
 
 fn main() {
     let mut a = Almanac::new();
     a.load("2023/day05/input.txt");
+
+    println!(
+        "0/0_dst={}, 0/0_src={}, 0/0_len={}",
+        a.maps[0][0].destination_start, a.maps[0][0].source_start, a.maps[0][0].length
+    );
 }
