@@ -2,15 +2,15 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 
 pub struct Almanac {
-    seeds: Vec<u32>,
+    seeds: Vec<u64>,
     maps: Vec<Vec<Range>>,
     maps_name: Vec<String>,
 }
 
 struct Range {
-    destination_start: u32,
-    source_start: u32,
-    length: u32,
+    destination_start: u64,
+    source_start: u64,
+    length: u64,
 }
 
 impl Almanac {
@@ -21,6 +21,7 @@ impl Almanac {
             maps_name: vec![],
         }
     }
+
     fn load(&mut self, filename: &str) {
         let file = File::open(filename).unwrap();
         let reader = BufReader::new(file);
@@ -50,9 +51,27 @@ impl Almanac {
         for n in v {
             if !n.trim().is_empty() {
                 println!("seed={n}");
-                let val: u32 = n.parse::<u32>().unwrap();
+                let val: u64 = n.parse::<u64>().unwrap();
                 self.seeds.push(val);
             }
+        }
+    }
+
+    fn print(&self) {
+        print!("seeds:");
+        for s in self.seeds.iter() {
+            print!(" {}", &s);
+        }
+        println!("");
+        println!("");
+        let mut idx = 0;
+        for m in self.maps.iter() {
+            println!("{} map:", self.maps_name[idx]);
+            for r in m {
+                println!("{} {} {}", r.destination_start, r.source_start, r.length);
+            }
+            idx += 1;
+            println!("");
         }
     }
 }
@@ -65,7 +84,7 @@ impl Range {
 
         for r in v {
             if !r.trim().is_empty() {
-                rv[idx_rv] = r.parse::<u32>().unwrap();
+                rv[idx_rv] = r.parse::<u64>().unwrap();
                 idx_rv += 1;
             }
         }
@@ -102,6 +121,18 @@ mod tests {
     }
 
     #[test]
+    fn test_overflow() {
+        let a: u32 = 4102106917;
+        let b: u32 = 192860379;
+
+        // let c: u32 = a + b;
+        // c as u32 causes error
+        // attempt to compute `4102106917_u32 + 192860379_u32`, which would overflow
+        let c: u64 = (a as u64) + (b as u64);
+        println!("{c}");
+    }
+
+    #[test]
     fn test_load_map_ranges() {
         let mut a = Almanac::new();
         a.load("example.txt");
@@ -132,4 +163,5 @@ fn main() {
         "0/0_dst={}, 0/0_src={}, 0/0_len={}",
         a.maps[0][0].destination_start, a.maps[0][0].source_start, a.maps[0][0].length
     );
+    a.print();
 }
