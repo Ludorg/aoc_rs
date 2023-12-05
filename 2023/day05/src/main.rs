@@ -71,7 +71,9 @@ impl Almanac {
                 println!("{} {} {}", r.destination_start, r.source_start, r.length);
             }
             idx += 1;
-            println!("");
+            if idx < self.maps_name.len() {
+                println!("");
+            }
         }
     }
 }
@@ -143,6 +145,7 @@ mod tests {
         assert_eq!(a.maps[2][0].destination_start, 49);
         assert_eq!(a.maps[2][1].destination_start, 0);
         assert_eq!(a.maps[2][2].destination_start, 42);
+        a.print();
     }
 
     #[test]
