@@ -64,16 +64,13 @@ impl RacesDocument {
 
             if index == 0 {
                 let idx = item.find("Time:").unwrap() + "Time:".len() + 1;
-                time = item[idx..].replace(" ", "").parse::<u64>().unwrap();
+                time = item[idx..].replace(' ', "").parse::<u64>().unwrap();
             } else {
                 let idx = item.find("Distance:").unwrap() + "Distance:".len() + 1;
-                distance = item[idx..].replace(" ", "").parse::<u64>().unwrap();
+                distance = item[idx..].replace(' ', "").parse::<u64>().unwrap();
             }
         }
-        let r = Race {
-            time: time,
-            distance: distance,
-        };
+        let r = Race { time, distance };
         println!("{:?}", r);
         self.races.push(r);
     }
