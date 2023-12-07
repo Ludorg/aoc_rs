@@ -16,18 +16,32 @@ impl Hand {
         Self { cards }
     }
 
-    fn is_five_of_a_kind(self) -> bool {
+    fn is_five_of_a_kind(&self) -> bool {
         let mut cpy = self.cards.clone();
         cpy.sort();
-        let first = self.cards[0];
-        for c in self.cards {
+        let first = &self.cards[0];
+        for c in &self.cards {
             if c != first {
                 return false;
             }
         }
         true
     }
-    fn is_four_of_a_kind(self) -> bool {
+    fn get_nb_equal_cards(&self, c: &char) -> u32 {
+        let mut ret = 0;
+        for ci in &self.cards {
+            if ci == c {
+                ret += 1;
+            }
+        }
+        ret
+    }
+    fn is_four_of_a_kind(&self) -> bool {
+        for c in &self.cards {
+            if self.get_nb_equal_cards(c) == 4 {
+                return true;
+            }
+        }
         false
     }
     fn is_full_house(self) -> bool {
@@ -83,8 +97,17 @@ mod tests {
     fn test_get_type_of_hand() {
         let h1 = Hand::new("KKKKK");
         let h2 = Hand::new("AKKKK");
+        let h3 = Hand::new("AKJKK");
         assert!(h1.is_five_of_a_kind());
         assert!(!h2.is_five_of_a_kind());
+
+        assert!(h1.get_nb_equal_cards(&'K') == 5);
+        assert!(h2.get_nb_equal_cards(&'K') == 4);
+        assert!(h3.get_nb_equal_cards(&'K') == 3);
+
+        assert!(h2.is_four_of_a_kind());
+        assert!(!h1.is_four_of_a_kind());
+        assert!(!h3.is_four_of_a_kind());
     }
 
     #[test]
