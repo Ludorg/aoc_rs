@@ -16,6 +16,16 @@ impl Hand {
         Self { cards }
     }
 
+    fn get_nb_equal_cards(&self, c: &char) -> u32 {
+        let mut ret = 0;
+        for ci in &self.cards {
+            if ci == c {
+                ret += 1;
+            }
+        }
+        ret
+    }
+
     fn is_five_of_a_kind(&self) -> bool {
         let mut cpy = self.cards.clone();
         cpy.sort();
@@ -27,15 +37,7 @@ impl Hand {
         }
         true
     }
-    fn get_nb_equal_cards(&self, c: &char) -> u32 {
-        let mut ret = 0;
-        for ci in &self.cards {
-            if ci == c {
-                ret += 1;
-            }
-        }
-        ret
-    }
+
     fn is_four_of_a_kind(&self) -> bool {
         for c in &self.cards {
             if self.get_nb_equal_cards(c) == 4 {
@@ -45,9 +47,83 @@ impl Hand {
         false
     }
     fn is_full_house(&self) -> bool {
-        false
+        if self.is_five_of_a_kind() {
+            return false;
+        }
+        if self.is_four_of_a_kind() {
+            return false;
+        }
+        let ret = false;
+        let mut found_3 = 'X';
+        let mut found_2 = 'X';
+
+        for c in &self.cards {
+            if self.get_nb_equal_cards(c) == 3 {
+                println!("found 3 '{c}'");
+                found_3 = *c;
+                break;
+            }
+        }
+        // if not found 3 cards
+        if found_3 == 'X' {
+            return false;
+        }
+
+        for c in &self.cards {
+            if found_3 != *c {
+                if self.get_nb_equal_cards(c) == 2 {
+                    println!("found 2 '{c}'");
+                    found_2 = *c;
+                    break;
+                }
+            }
+        }
+
+        if found_2 == 'X' {
+            return false;
+        }
+
+        true
     }
     fn is_three_of_a_kind(&self) -> bool {
+        if self.is_five_of_a_kind() {
+            return false;
+        }
+        if self.is_four_of_a_kind() {
+            return false;
+        }
+        if self.is_full_house() {
+            return false;
+        }
+        let ret = false;
+        let mut found_3 = 'X';
+        let mut found_2 = 'X';
+
+        for c in &self.cards {
+            if self.get_nb_equal_cards(c) == 3 {
+                println!("found 3 '{c}'");
+                found_3 = *c;
+                break;
+            }
+        }
+        // if not found 3 cards
+        if found_3 == 'X' {
+            return false;
+        }
+
+        for c in &self.cards {
+            if found_3 != *c {
+                if self.get_nb_equal_cards(c) == 2 {
+                    println!("found 2 '{c}'");
+                    found_2 = *c;
+                    break;
+                }
+            }
+        }
+
+        if found_2 == 'X' {
+            return true;
+        }
         false
     }
     fn is_two_pairs(&self) -> bool {
@@ -98,6 +174,8 @@ mod tests {
         let h1 = Hand::new("KKKKK");
         let h2 = Hand::new("AKKKK");
         let h3 = Hand::new("AKJKK");
+        let h4 = Hand::new("AAKKK");
+        let h5 = Hand::new("AAKKJ");
         assert!(h1.is_five_of_a_kind());
         assert!(!h2.is_five_of_a_kind());
 
@@ -108,6 +186,24 @@ mod tests {
         assert!(h2.is_four_of_a_kind());
         assert!(!h1.is_four_of_a_kind());
         assert!(!h3.is_four_of_a_kind());
+
+        assert!(h4.is_full_house());
+        assert!(!h3.is_full_house());
+        assert!(!h1.is_full_house());
+        assert!(!h2.is_full_house());
+
+        assert!(h3.is_three_of_a_kind());
+        assert!(!h4.is_three_of_a_kind());
+        assert!(!h1.is_three_of_a_kind());
+        assert!(!h2.is_three_of_a_kind());
+        assert!(!h5.is_three_of_a_kind());
+
+        let h10 = Hand::new("KAKJK");
+        let h11 = Hand::new("22KK2");
+        assert!(h10.is_three_of_a_kind());
+        assert!(!h10.is_full_house());
+        assert!(h11.is_full_house());
+        assert!(!h11.is_three_of_a_kind());
     }
 
     #[test]
