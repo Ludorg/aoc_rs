@@ -44,19 +44,19 @@ impl Hand {
         }
         false
     }
-    fn is_full_house(self) -> bool {
+    fn is_full_house(&self) -> bool {
         false
     }
-    fn is_three_of_a_kind(self) -> bool {
+    fn is_three_of_a_kind(&self) -> bool {
         false
     }
-    fn is_two_pairs(self) -> bool {
+    fn is_two_pairs(&self) -> bool {
         false
     }
-    fn is_one_pair(self) -> bool {
+    fn is_one_pair(&self) -> bool {
         false
     }
-    fn is_high_card(self) -> bool {
+    fn is_high_card(&self) -> bool {
         false
     }
 }
