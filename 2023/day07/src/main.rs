@@ -26,67 +26,30 @@ impl Hand {
         ret
     }
 
-    fn is_five_of_a_kind(&self) -> bool {
+    fn is_five_of_a_kind(&self) -> (bool, char) {
         let first = &self.cards[0];
         for c in &self.cards {
             if c != first {
-                return false;
+                return (false, 'X');
             }
         }
-        true
+        (true, *first)
     }
 
-    fn is_four_of_a_kind(&self) -> bool {
-        if self.is_five_of_a_kind() {
-            return false;
+    fn is_four_of_a_kind(&self) -> (bool, char) {
+        if self.is_five_of_a_kind().0 {
+            return (false, 'X');
         }
         for c in &self.cards {
             if self.get_nb_equal_cards(c) == 4 {
-                return true;
+                return (true, *c);
             }
         }
-        false
+        (false, 'X')
     }
-    fn is_full_house(&self) -> bool {
-        if self.is_four_of_a_kind() {
-            return false;
-        }
-        let ret = false;
-        let mut found_3 = 'X';
-        let mut found_2 = 'X';
-
-        for c in &self.cards {
-            if self.get_nb_equal_cards(c) == 3 {
-                println!("found 3 '{c}'");
-                found_3 = *c;
-                break;
-            }
-        }
-        // if not found 3 cards
-        if found_3 == 'X' {
-            return false;
-        }
-
-        for c in &self.cards {
-            if found_3 != *c {
-                if self.get_nb_equal_cards(c) == 2 {
-                    println!("found 2 '{c}'");
-                    found_2 = *c;
-                    break;
-                }
-            }
-        }
-
-        if found_2 == 'X' {
-            return false;
-        }
-
-        true
-    }
-
-    fn is_three_of_a_kind(&self) -> bool {
-        if self.is_full_house() {
-            return false;
+    fn is_full_house(&self) -> (bool, char, char) {
+        if self.is_four_of_a_kind().0 {
+            return (false, 'X', 'X');
         }
 
         let mut found_3 = 'X';
@@ -101,7 +64,7 @@ impl Hand {
         }
         // if not found 3 cards
         if found_3 == 'X' {
-            return false;
+            return (false, 'X', 'X');
         }
 
         for c in &self.cards {
@@ -115,9 +78,46 @@ impl Hand {
         }
 
         if found_2 == 'X' {
-            return true;
+            return (false, 'X', 'X');
         }
-        false
+
+        (true, found_3, found_2)
+    }
+
+    fn is_three_of_a_kind(&self) -> (bool, char) {
+        if self.is_full_house().0 {
+            return (false, 'X');
+        }
+
+        let mut found_3 = 'X';
+        let mut found_2 = 'X';
+
+        for c in &self.cards {
+            if self.get_nb_equal_cards(c) == 3 {
+                println!("found 3 '{c}'");
+                found_3 = *c;
+                break;
+            }
+        }
+        // if not found 3 cards
+        if found_3 == 'X' {
+            return (false, 'X');
+        }
+
+        for c in &self.cards {
+            if found_3 != *c {
+                if self.get_nb_equal_cards(c) == 2 {
+                    println!("found 2 '{c}'");
+                    found_2 = *c;
+                    break;
+                }
+            }
+        }
+
+        if found_2 == 'X' {
+            return (true, found_3);
+        }
+        (false, 'X')
     }
 
     fn pair_check(&self) -> (char, char) {
@@ -148,37 +148,53 @@ impl Hand {
         return (found_2_1, found_2_2);
     }
 
-    fn is_two_pairs(&self) -> bool {
-        if self.is_three_of_a_kind() {
-            return false;
+    fn is_two_pairs(&self) -> (bool, char, char) {
+        if self.is_three_of_a_kind().0 {
+            return (false, 'X', 'X');
         }
 
         let (found_2_1, found_2_2) = self.pair_check();
         if found_2_2 == 'X' {
-            return false;
+            return (false, 'X', 'X');
         }
         if found_2_2 == found_2_1 {
-            return false;
+            return (false, 'X', 'X');
         }
-        true
+        (true, found_2_1, found_2_2)
     }
-    fn is_one_pair(&self) -> bool {
-        if self.is_two_pairs() {
-            return false;
+    fn is_one_pair(&self) -> (bool, char) {
+        if self.is_two_pairs().0 {
+            return (false, 'X');
         }
 
         let (found_2_1, found_2_2) = self.pair_check();
 
         if found_2_2 == found_2_1 {
-            return false;
+            return (false, 'X');
         }
         if found_2_2 == 'X' {
-            return true;
+            return (true, found_2_1);
         }
-        false
+        (false, 'X')
     }
-    fn is_high_card(&self) -> bool {
-        !self.is_one_pair()
+    fn is_high_card(&self) -> (bool, char) {
+        let b = self.is_one_pair().0;
+        if b {
+            return (!b, 'X');
+        }
+        let mut max = 0;
+        let mut idx_curr = 0;
+        let mut idx_max = 0;
+        for c in &self.cards {
+            let val = char_to_card_value(*c);
+            if val > max {
+                idx_max = idx_curr;
+                max = val;
+            }
+            idx_curr += 1;
+        }
+
+        (!b, self.cards[idx_max])
     }
 }
 
@@ -231,48 +247,64 @@ mod tests {
         let h22 = Hand::new("AAKK2");
 
         let h30 = Hand::new("AJKT2");
+        let h31 = Hand::new("3JKT2");
 
-        assert!(h1.is_five_of_a_kind());
-        assert!(!h2.is_five_of_a_kind());
+        assert!(h1.is_five_of_a_kind().0);
+        assert_eq!(h1.is_five_of_a_kind().1, 'K');
+        assert!(!h2.is_five_of_a_kind().0);
+        assert_eq!(h2.is_five_of_a_kind().1, 'X');
 
         assert!(h1.get_nb_equal_cards(&'K') == 5);
         assert!(h2.get_nb_equal_cards(&'K') == 4);
         assert!(h3.get_nb_equal_cards(&'K') == 3);
 
-        assert!(h2.is_four_of_a_kind());
-        assert!(!h1.is_four_of_a_kind());
-        assert!(!h3.is_four_of_a_kind());
+        assert!(h2.is_four_of_a_kind().0);
+        assert_eq!(h2.is_four_of_a_kind().1, 'K');
+        assert!(!h1.is_four_of_a_kind().0);
+        assert!(!h3.is_four_of_a_kind().0);
 
-        assert!(h4.is_full_house());
-        assert!(!h3.is_full_house());
-        assert!(!h1.is_full_house());
-        assert!(!h2.is_full_house());
+        assert!(h4.is_full_house().0);
+        assert_eq!(h4.is_full_house().1, 'K');
+        assert_eq!(h4.is_full_house().2, 'A');
+        assert!(!h3.is_full_house().0);
+        assert!(!h1.is_full_house().0);
+        assert!(!h2.is_full_house().0);
 
-        assert!(h3.is_three_of_a_kind());
-        assert!(!h4.is_three_of_a_kind());
-        assert!(!h1.is_three_of_a_kind());
-        assert!(!h2.is_three_of_a_kind());
-        assert!(!h5.is_three_of_a_kind());
+        assert!(h3.is_three_of_a_kind().0);
+        assert_eq!(h3.is_three_of_a_kind().1, 'K');
+        assert!(!h4.is_three_of_a_kind().0);
+        assert!(!h1.is_three_of_a_kind().0);
+        assert!(!h2.is_three_of_a_kind().0);
+        assert!(!h5.is_three_of_a_kind().0);
 
-        assert!(h10.is_three_of_a_kind());
-        assert!(!h10.is_full_house());
-        assert!(h11.is_full_house());
-        assert!(!h11.is_three_of_a_kind());
+        assert!(h10.is_three_of_a_kind().0);
+        assert_eq!(h10.is_three_of_a_kind().1, 'K');
+        assert!(!h10.is_full_house().0);
+        assert!(h11.is_full_house().0);
+        assert_eq!(h11.is_full_house().1, '2');
+        assert_eq!(h11.is_full_house().2, 'K');
+        assert!(!h11.is_three_of_a_kind().0);
 
-        assert!(h5.is_two_pairs());
-        assert!(h15.is_two_pairs());
-        assert!(!h10.is_two_pairs());
-        assert!(!h11.is_two_pairs());
-        assert!(!h20.is_two_pairs());
+        assert!(h5.is_two_pairs().0);
+        assert_eq!(h5.is_two_pairs().1, 'A');
+        assert_eq!(h5.is_two_pairs().2, 'K');
+        assert!(h15.is_two_pairs().0);
+        assert_eq!(h15.is_two_pairs().1, 'T');
+        assert_eq!(h15.is_two_pairs().2, '3');
+        assert!(!h10.is_two_pairs().0);
+        assert!(!h11.is_two_pairs().0);
+        assert!(!h20.is_two_pairs().0);
 
-        assert!(h20.is_one_pair());
-        assert!(h21.is_one_pair());
-        assert!(!h22.is_one_pair());
-        assert!(!h2.is_one_pair());
+        assert!(h20.is_one_pair().0);
+        assert!(h21.is_one_pair().0);
+        assert!(!h22.is_one_pair().0);
+        assert!(!h2.is_one_pair().0);
 
-        assert!(h22.is_two_pairs());
-        assert!(!h21.is_high_card());
-        assert!(h30.is_high_card());
+        assert!(h22.is_two_pairs().0);
+        assert!(!h21.is_high_card().0);
+        assert!(h30.is_high_card().0);
+        assert_eq!(h30.is_high_card().1, 'A');
+        assert_eq!(h31.is_high_card().1, 'K');
     }
 
     #[test]
