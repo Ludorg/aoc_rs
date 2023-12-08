@@ -87,6 +87,12 @@ impl Hand {
     }
 
     fn is_three_of_a_kind(&self) -> (bool, char) {
+        if self.is_five_of_a_kind().0 {
+            return (false, 'X');
+        }
+        if self.is_four_of_a_kind().0 {
+            return (false, 'X');
+        }
         if self.is_full_house().0 {
             return (false, 'X');
         }
@@ -151,6 +157,9 @@ impl Hand {
     }
 
     fn is_two_pairs(&self) -> (bool, char, char) {
+        if self.is_full_house().0 {
+            return (false, 'X', 'X');
+        }
         if self.is_three_of_a_kind().0 {
             return (false, 'X', 'X');
         }
@@ -166,6 +175,18 @@ impl Hand {
     }
 
     fn is_one_pair(&self) -> (bool, char) {
+        if self.is_five_of_a_kind().0 {
+            return (false, 'X');
+        }
+        if self.is_four_of_a_kind().0 {
+            return (false, 'X');
+        }
+        if self.is_full_house().0 {
+            return (false, 'X');
+        }
+        if self.is_three_of_a_kind().0 {
+            return (false, 'X');
+        }
         if self.is_two_pairs().0 {
             println!("B");
             return (false, 'X');
@@ -183,9 +204,14 @@ impl Hand {
         (false, 'X')
     }
 
-    // TODO : fixme
     fn is_high_card(&self) -> (bool, char) {
         if self.is_five_of_a_kind().0 {
+            return (false, 'X');
+        }
+        if self.is_four_of_a_kind().0 {
+            return (false, 'X');
+        }
+        if self.is_full_house().0 {
             return (false, 'X');
         }
         if self.is_three_of_a_kind().0 {
@@ -214,25 +240,41 @@ impl Hand {
     }
 
     fn get_score(&self) -> u32 {
+        let t = self.is_five_of_a_kind();
+        if t.0 {
+            return 63181523 * char_to_card_value(t.1) + 1; // 63181524..821359800
+        }
+        let t = self.is_four_of_a_kind();
+        if t.0 {
+            return 4860117 * char_to_card_value(t.1) + 1; // 4860118..63181522
+        }
+        let t = self.is_full_house();
+        if t.0 {
+            let v1 = 28758 * char_to_card_value(t.2) + 1; // 28759..373854
+            let v2 = 373855 * char_to_card_value(t.1) + 1; // 373856..4860116
+            return v2 + v1;
+        }
+        let t = self.is_three_of_a_kind();
+        if t.0 {
+            return 2212 * char_to_card_value(t.1) + 1; // 2213..28757
+        }
+
+        let t = self.is_two_pairs();
+        if t.0 {
+            let v1 = 170 * char_to_card_value(t.1) + 1; // 171..2211
+            let v2 = 170 * char_to_card_value(t.2) + 1; // 171..2211
+            return v2 + v1;
+        }
+        let t = self.is_one_pair();
+        if t.0 {
+            return 13 * char_to_card_value(t.1) + 1; // 14..170
+        }
         let t = self.is_high_card();
         if t.0 {
             return 1 * char_to_card_value(t.1); // 1..13
         }
 
-        let t1 = self.is_one_pair();
-        if t1.0 {
-            return 13 * char_to_card_value(t1.1) + 1; // 14..170
-        }
-
-        let t2 = self.is_two_pairs();
-        println!("{:?}", t2);
-        if t2.0 {
-            let v1 = 170 * char_to_card_value(t2.1) + 1; // 171..2211
-            let v2 = 170 * char_to_card_value(t2.2) + 1; // 171..2211
-            return v2 + v1;
-        }
-
-        9999999
+        0
     }
 }
 
@@ -299,14 +341,45 @@ mod tests {
         assert_eq!(h7.is_two_pairs().2, 'K');
         let h8 = Hand::new("KKTT2");
         let h9 = Hand::new("AATT2");
-        let h10 = Hand::new("TTAA4");
+        let h10 = Hand::new("TATA4");
 
         println!("h7 {}", h7.get_score());
         println!("h8 {}", h8.get_score());
 
+        assert!(h10.is_two_pairs().0);
+        assert!(!h10.is_high_card().0);
         assert!(h8.get_score() > h7.get_score());
         assert!(h9.get_score() > h7.get_score());
         assert!(h9.get_score() == h10.get_score());
+
+        let h11 = Hand::new("KKKT2");
+        let h12 = Hand::new("AAAT2");
+
+        assert!(h11.is_three_of_a_kind().0);
+        assert!(h11.get_score() > h7.get_score());
+        assert!(h12.get_score() > h11.get_score());
+
+        let h20 = Hand::new("KKKAA");
+        let h22 = Hand::new("TTTAA");
+        let h21 = Hand::new("KKAAA");
+        assert!(!h20.is_three_of_a_kind().0);
+        assert!(!h20.is_two_pairs().0);
+        assert!(!h20.is_one_pair().0);
+        assert!(h20.is_full_house().0);
+        println!("h20={}", h20.get_score());
+        assert!(h20.get_score() > h12.get_score());
+        assert!(h20.get_score() > h22.get_score());
+        assert!(h21.get_score() > h20.get_score());
+
+        let h30 = Hand::new("KAAAA");
+        let h31 = Hand::new("KKKKA");
+        assert!(h30.get_score() > h31.get_score());
+        assert!(h30.get_score() > h21.get_score());
+
+        let h40 = Hand::new("AAAAA");
+        let h41 = Hand::new("KKKKK");
+        assert!(h40.get_score() > h41.get_score());
+        assert!(h41.get_score() > h31.get_score());
     }
 
     #[test]
