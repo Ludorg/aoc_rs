@@ -1,3 +1,5 @@
+use std::cmp::Ordering;
+
 //#[derive(Debug, PartialOrd, PartialEq)]
 #[derive(Debug)]
 struct Hand {
@@ -162,12 +164,15 @@ impl Hand {
         }
         (true, found_2_1, found_2_2)
     }
+
     fn is_one_pair(&self) -> (bool, char) {
         if self.is_two_pairs().0 {
+            println!("B");
             return (false, 'X');
         }
 
         let (found_2_1, found_2_2) = self.pair_check();
+        println!("C");
 
         if found_2_2 == found_2_1 {
             return (false, 'X');
@@ -177,11 +182,22 @@ impl Hand {
         }
         (false, 'X')
     }
+
+    // TODO : fixme
     fn is_high_card(&self) -> (bool, char) {
-        let b = self.is_one_pair().0;
-        if b {
-            return (!b, 'X');
+        if self.is_five_of_a_kind().0 {
+            return (false, 'X');
         }
+        if self.is_three_of_a_kind().0 {
+            return (false, 'X');
+        }
+        if self.is_two_pairs().0 {
+            return (false, 'X');
+        }
+        if self.is_one_pair().0 {
+            return (false, 'X');
+        }
+
         let mut max = 0;
         let mut idx_curr = 0;
         let mut idx_max = 0;
@@ -194,7 +210,29 @@ impl Hand {
             idx_curr += 1;
         }
 
-        (!b, self.cards[idx_max])
+        (true, self.cards[idx_max])
+    }
+
+    fn get_score(&self) -> u32 {
+        let t = self.is_high_card();
+        if t.0 {
+            return 1 * char_to_card_value(t.1); // 1..13
+        }
+
+        let t1 = self.is_one_pair();
+        if t1.0 {
+            return 13 * char_to_card_value(t1.1) + 1; // 14..170
+        }
+
+        let t2 = self.is_two_pairs();
+        println!("{:?}", t2);
+        if t2.0 {
+            let v1 = 170 * char_to_card_value(t2.1) + 1; // 171..2211
+            let v2 = 170 * char_to_card_value(t2.2) + 1; // 171..2211
+            return v2 + v1;
+        }
+
+        9999999
     }
 }
 
@@ -207,6 +245,10 @@ impl PartialEq for Hand {
         c == o
     }
 }
+
+// impl Ord for Hand {
+//     fn cmp(&self, other: &Self) -> Ordering {}
+// }
 
 fn char_to_card_value(c: char) -> u32 {
     match c {
@@ -231,6 +273,43 @@ fn char_to_card_value(c: char) -> u32 {
 mod tests {
     use super::*;
     #[test]
+    fn test_get_score() {
+        let h1 = Hand::new("3JKT2");
+        let h2 = Hand::new("4JAT2");
+        assert_eq!(h1.get_score(), 12);
+        assert_eq!(h2.get_score(), 13);
+
+        let h3 = Hand::new("33KT2");
+        let h4 = Hand::new("KK4T2");
+        let h5 = Hand::new("K4T2K");
+        let h6 = Hand::new("K4KT2");
+        assert_eq!(h3.get_score(), 27);
+        assert_eq!(h4.get_score(), 157);
+        assert_eq!(h5.get_score(), h4.get_score());
+        assert_eq!(h6.get_score(), h4.get_score());
+
+        let h7 = Hand::new("33KK7");
+        assert!(h7.is_two_pairs().0);
+        assert!(!h7.is_one_pair().0);
+
+        assert!(!h7.is_one_pair().0);
+        assert!(!h7.is_high_card().0);
+
+        assert_eq!(h7.is_two_pairs().1, '3');
+        assert_eq!(h7.is_two_pairs().2, 'K');
+        let h8 = Hand::new("KKTT2");
+        let h9 = Hand::new("AATT2");
+        let h10 = Hand::new("TTAA4");
+
+        println!("h7 {}", h7.get_score());
+        println!("h8 {}", h8.get_score());
+
+        assert!(h8.get_score() > h7.get_score());
+        assert!(h9.get_score() > h7.get_score());
+        assert!(h9.get_score() == h10.get_score());
+    }
+
+    #[test]
     fn test_get_type_of_hand() {
         let h1 = Hand::new("KKKKK");
         let h2 = Hand::new("AKKKK");
@@ -250,6 +329,8 @@ mod tests {
         let h31 = Hand::new("3JKT2");
 
         assert!(h1.is_five_of_a_kind().0);
+        assert!(!h1.is_high_card().0);
+
         assert_eq!(h1.is_five_of_a_kind().1, 'K');
         assert!(!h2.is_five_of_a_kind().0);
         assert_eq!(h2.is_five_of_a_kind().1, 'X');
