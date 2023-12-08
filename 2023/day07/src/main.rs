@@ -188,12 +188,10 @@ impl Hand {
             return (false, 'X');
         }
         if self.is_two_pairs().0 {
-            println!("B");
             return (false, 'X');
         }
 
         let (found_2_1, found_2_2) = self.pair_check();
-        println!("C");
 
         if found_2_2 == found_2_1 {
             return (false, 'X');
@@ -288,9 +286,19 @@ impl PartialEq for Hand {
     }
 }
 
-// impl Ord for Hand {
-//     fn cmp(&self, other: &Self) -> Ordering {}
-// }
+impl Eq for Hand {}
+
+impl Ord for Hand {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.get_score().cmp(&other.get_score())
+    }
+}
+
+impl PartialOrd for Hand {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
 
 fn char_to_card_value(c: char) -> u32 {
     match c {
@@ -314,6 +322,20 @@ fn char_to_card_value(c: char) -> u32 {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn test_ordering() {
+        let h1 = Hand::new("3JKT2");
+        let h2 = Hand::new("4JAT2");
+        assert!(h2 > h1);
+
+        let h1 = Hand::new("KKKKA");
+        let h2 = Hand::new("AKKKA");
+        assert!(h1 > h2);
+
+        let h1 = Hand::new("KKKKA");
+        let h2 = Hand::new("AKKKK");
+        assert!(h1 >= h2); // test equals
+    }
     #[test]
     fn test_get_score() {
         let h1 = Hand::new("3JKT2");
