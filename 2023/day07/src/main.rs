@@ -109,9 +109,8 @@ impl Ord for Hand {
             Ordering::Greater
         } else if o > s {
             Ordering::Less
-        } else
-        // equal
-        {
+        } else {
+            // hands are of equal types, compare firsts cards
             for idx in 0..self.cards.len() {
                 if char_to_card_value(self.cards[idx]) > char_to_card_value(other.cards[idx]) {
                     ret = Ordering::Greater;
