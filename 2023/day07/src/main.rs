@@ -57,7 +57,7 @@ impl Hand {
                 // is_three or is_two_pairs
                 let mut cpy = self.cards.clone();
                 cpy.sort();
-                // the should be six combinations
+                // there should be only six combinations
                 // AAABC
                 // AABBC
                 // ABBCC
@@ -157,8 +157,6 @@ impl Game {
         let file = File::open(filename).unwrap();
         let reader = BufReader::new(file);
 
-        // let mut id_sum = 0;
-        // let mut power_sum = 0;
         for (_index, line) in reader.lines().enumerate() {
             let item = &line.unwrap();
             let v: Vec<_> = item.split(' ').collect();
