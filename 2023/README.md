@@ -26,8 +26,8 @@ I'm in the lower part of our private leaderboard, but it's still fun to play :)
 
 ## Some words on day 7
 
-For day07, I misread the instructions and did not notic that `33332 > is stronger than 2AAA`.
-The meme below ([seen on reddit](https://i.redd.it/s6rgso1hft4c1.jpg)) should have warned me. First version of code is found in '2023/buggy_day07'.
+For [day07](./day07/), I misread the instructions and did not notice that `33332 > is stronger than 2AAA`.
+The meme below ([seen on reddit](https://i.redd.it/s6rgso1hft4c1.jpg)) should have warned me. First version of code is [here](./buggy_day07/).
 
 ![warning from reddit](./buggy_day07_from_reddit.jpg "warning from reddit")
 
