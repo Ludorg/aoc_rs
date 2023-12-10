@@ -59,21 +59,81 @@ impl Network {
         }
         n
     }
+    fn get_right(&self, name: &str) -> String {
+        let node = self.nodes.get(name);
+        node.unwrap().right.clone()
+    }
+
+    fn get_left(&self, name: &str) -> String {
+        let node = self.nodes.get(name);
+        node.unwrap().left.clone()
+    }
+
+    fn process_step(&self, i: char, name: &str) -> String {
+        if i == 'L' {
+            return self.get_left(name);
+        }
+        if i == 'R' {
+            return self.get_right(name);
+        }
+        "".to_string()
+    }
+
+    fn process_instructions(&self) -> u32 {
+        let mut step = 0;
+        let instr_len = self.instructions.len();
+        let mut name: String = "AAA".to_string();
+        loop {
+            let instr = self.instructions[step % instr_len];
+            name = self.process_step(instr, name.as_str());
+            step += 1;
+            if name == "ZZZ" {
+                break;
+            }
+        }
+        step as u32
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_process_instructions() {
+        let n = Network::load("example.txt");
+        assert_eq!(n.process_instructions(), 2);
+
+        let n = Network::load("example2.txt");
+        assert_eq!(n.process_instructions(), 6);
+    }
+
+    #[test]
+    fn test_get_left_right() {
+        let n = Network::load("example.txt");
+        assert_eq!(n.get_left("AAA"), "BBB");
+        assert_eq!(n.get_right("BBB"), "EEE");
+        assert_eq!(n.get_right("AAA"), "CCC");
+        assert_eq!(n.get_left("CCC"), "ZZZ");
+    }
     #[test]
     fn test_load() {
         let n = Network::load("example.txt");
         assert!(n.instructions.len() == 2);
         assert!(n.nodes.len() == 7);
         println!("{:?}", n);
+
+        let n = Network::load("example2.txt");
+        assert!(n.instructions.len() == 3);
+        assert!(n.nodes.len() == 3);
+        println!("{:?}", n);
     }
 }
 
 fn main() {
     let n = Network::load("2023/day08/input.txt");
-    println!("{:?}", n)
+    println!("{:?}", n);
+    println!("AAA/left={:?}", n.get_left("AAA"));
+    println!("AAA/right={:?}", n.get_right("AAA"));
+    println!("day8/part1={}", n.process_instructions());
 }

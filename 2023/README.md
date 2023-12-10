@@ -20,7 +20,7 @@ I'm in the lower part of our private leaderboard, but it's still fun to play :)
 |  5  | ⭐ |        |
 |  6  | ⭐ | ⭐    |
 |  7  | ⭐ |        |
-|  8  |  |        |
+|  8  | ⭐ |        |
 |  9  |  |        |
 |  10  |  |        |
 
