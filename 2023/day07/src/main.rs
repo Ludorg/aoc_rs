@@ -1,11 +1,12 @@
 use std::cmp::Ordering;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Eq)]
 struct Hand {
     cards: Vec<char>,
+    bid: u32,
 }
 
-#[derive(PartialEq)]
+#[derive(PartialEq, PartialOrd)]
 enum HandType {
     Five = 7,
     Four = 6,
@@ -25,7 +26,13 @@ impl Hand {
                 cards.push(c);
             }
         }
-        Self { cards }
+        Self { cards, bid: 0 }
+    }
+
+    fn new2(s: &str, bid_str: &str) -> Self {
+        let mut h = Self::new(s);
+        h.bid = bid_str.parse().unwrap();
+        h
     }
 
     fn get_type(&self) -> HandType {
@@ -78,7 +85,45 @@ impl Hand {
     }
 }
 
-impl Eq for Hand {}
+impl PartialEq for Hand {
+    fn eq(&self, other: &Self) -> bool {
+        self.cards == other.cards
+    }
+}
+
+impl PartialOrd for Hand {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for Hand {
+    fn cmp(&self, other: &Self) -> Ordering {
+        let s = self.get_type();
+        let o = other.get_type();
+        let mut ret = Ordering::Equal;
+
+        if s > o {
+            Ordering::Greater
+        } else if o > s {
+            Ordering::Less
+        } else
+        // equal
+        {
+            for idx in 0..self.cards.len() {
+                if char_to_card_value(self.cards[idx]) > char_to_card_value(other.cards[idx]) {
+                    ret = Ordering::Greater;
+                    break;
+                }
+                if char_to_card_value(self.cards[idx]) < char_to_card_value(other.cards[idx]) {
+                    ret = Ordering::Less;
+                    break;
+                }
+            }
+            ret
+        }
+    }
+}
 
 fn char_to_card_value(c: char) -> u32 {
     match c {
@@ -101,6 +146,18 @@ fn char_to_card_value(c: char) -> u32 {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_new2() {
+        assert!(Hand::new2("32T3K", "765").bid == 765);
+        assert!(Hand::new2("32T3K", "765").get_type() == HandType::One);
+    }
+
+    #[test]
+    fn test_compare() {
+        assert!(Hand::new("33332") > Hand::new("2AAAA")); // amazing !!
+        assert!(Hand::new("77888") > Hand::new("77788")); // amazing !!
+    }
 
     #[test]
     fn test_eq() {
@@ -131,6 +188,8 @@ mod tests {
         assert!(Hand::new("22443").get_type() == HandType::Two);
         assert!(Hand::new("44223").get_type() == HandType::Two);
         assert!(Hand::new("33224").get_type() == HandType::Two);
+
+        assert!(Hand::new("32T3K").get_type() == HandType::One);
 
         assert!(Hand::new("A23A4").get_type() == HandType::One);
         assert!(Hand::new("323A4").get_type() == HandType::One);
