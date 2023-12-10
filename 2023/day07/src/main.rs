@@ -1,6 +1,8 @@
 use std::cmp::Ordering;
+use std::fs::File;
+use std::io::{BufRead, BufReader};
 
-#[derive(Debug, Eq)]
+#[derive(Debug, Eq, Clone)]
 struct Hand {
     cards: Vec<char>,
     bid: u32,
@@ -143,14 +145,71 @@ fn char_to_card_value(c: char) -> u32 {
         _ => 0,
     }
 }
+
+#[derive(Debug)]
+struct Game {
+    hands: Vec<Hand>,
+}
+
+impl Game {
+    fn load(filename: &str) -> Self {
+        let mut g = Self { hands: vec![] };
+
+        let file = File::open(filename).unwrap();
+        let reader = BufReader::new(file);
+
+        // let mut id_sum = 0;
+        // let mut power_sum = 0;
+        for (_index, line) in reader.lines().enumerate() {
+            let item = &line.unwrap();
+            let v: Vec<_> = item.split(' ').collect();
+            g.hands.push(Hand::new2(v[0], v[1]));
+        }
+        g
+    }
+    fn get_total_winnings(&self) -> u32 {
+        println!("before sort={:?}", self.hands);
+        let mut hands = self.hands.clone();
+        hands.sort();
+        println!("after sort={:?}", hands);
+
+        let mut ret = 0;
+        let mut idx = 1;
+
+        for h in hands {
+            println!("{:?}", h);
+            ret += h.bid * idx;
+            idx += 1;
+        }
+
+        ret
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn test_get_total_winnings() {
+        let g = Game::load("example_not_sorted.txt");
+        assert_eq!(g.get_total_winnings(), 6440);
+    }
+
+    #[test]
+    fn test_game_load() {
+        let g = Game::load("example.txt");
+        assert!(g.hands.len() == 5);
+        println!("{:?}", g);
+    }
 
     #[test]
     fn test_new2() {
         assert!(Hand::new2("32T3K", "765").bid == 765);
         assert!(Hand::new2("32T3K", "765").get_type() == HandType::One);
+
+        assert!(Hand::new2("32T3K", "465").get_type() == HandType::One);
+        assert!(Hand::new2("32T3K", "465") >= Hand::new2("32T3K", "765"));
+        assert!(Hand::new2("32T3K", "465") == Hand::new2("32T3K", "765"));
     }
 
     #[test]
@@ -209,5 +268,6 @@ mod tests {
 }
 
 fn main() {
-    println!("Hello, world!");
+    let g = Game::load("2023/day07/input.txt");
+    println!("day07/part1={:?}", g.get_total_winnings());
 }
