@@ -1,6 +1,6 @@
 use std::cmp::Ordering;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 struct Hand {
     cards: Vec<char>,
 }
@@ -25,9 +25,9 @@ impl Hand {
                 cards.push(c);
             }
         }
-
         Self { cards }
     }
+
     fn get_type(&self) -> HandType {
         let mut cpy = self.cards.clone();
         cpy.sort();
@@ -48,22 +48,27 @@ impl Hand {
                 // is_three or is_two_pairs
                 let mut cpy = self.cards.clone();
                 cpy.sort();
+                // the should be six combinations
+                // AAABC
+                // AABBC
+                // ABBCC
+                // ABBBC
+                // ABCCC
+                // AABCC
                 if cpy[0] == cpy[1] {
                     if cpy[0] == cpy[2] {
-                        HandType::Three
-                    } else if cpy[2] == cpy[3] {
-                        HandType::Two
+                        HandType::Three // AAABC
                     } else {
-                        HandType::Three
+                        HandType::Two // AABBC of AABCC
                     }
                 } else if cpy[1] == cpy[2] {
                     if cpy[1] == cpy[3] {
-                        HandType::Three
+                        HandType::Three // ABBBC
                     } else {
-                        HandType::Two
+                        HandType::Two // ABBCC
                     }
                 } else {
-                    HandType::Three
+                    HandType::Three // ACBBB
                 }
             }
             4 => HandType::One,  // is_one_pair
@@ -72,6 +77,8 @@ impl Hand {
         }
     }
 }
+
+impl Eq for Hand {}
 
 fn char_to_card_value(c: char) -> u32 {
     match c {
@@ -96,20 +103,42 @@ mod tests {
     use super::*;
 
     #[test]
+    fn test_eq() {
+        assert!(Hand::new("AAAAA") == Hand::new("AAAAA"));
+        assert!(Hand::new("7AAAA") != Hand::new("AAAA7"));
+    }
+
+    #[test]
     fn test_get_type() {
         assert!(Hand::new("AAAAA").get_type() == HandType::Five);
+
+        assert!(Hand::new("KKKAK").get_type() == HandType::Four);
         assert!(Hand::new("AA8AA").get_type() == HandType::Four);
         assert!(Hand::new("AAAA8").get_type() == HandType::Four);
+
         assert!(Hand::new("23332").get_type() == HandType::Full);
         assert!(Hand::new("33232").get_type() == HandType::Full);
+        assert!(Hand::new("23332").get_type() == HandType::Full);
+        assert!(Hand::new("43344").get_type() == HandType::Full);
+
         assert!(Hand::new("TTT98").get_type() == HandType::Three);
         assert!(Hand::new("T8T9T").get_type() == HandType::Three);
         assert!(Hand::new("TT8T9").get_type() == HandType::Three);
         assert!(Hand::new("TT89T").get_type() == HandType::Three);
+
         assert!(Hand::new("23432").get_type() == HandType::Two);
         assert!(Hand::new("22344").get_type() == HandType::Two);
+        assert!(Hand::new("22443").get_type() == HandType::Two);
+        assert!(Hand::new("44223").get_type() == HandType::Two);
+        assert!(Hand::new("33224").get_type() == HandType::Two);
+
         assert!(Hand::new("A23A4").get_type() == HandType::One);
+        assert!(Hand::new("323A4").get_type() == HandType::One);
+        assert!(Hand::new("423A4").get_type() == HandType::One);
+
         assert!(Hand::new("23456").get_type() == HandType::High);
+        assert!(Hand::new("AJKT2").get_type() == HandType::High);
+        assert!(Hand::new("73456").get_type() == HandType::High);
     }
 
     #[test]
