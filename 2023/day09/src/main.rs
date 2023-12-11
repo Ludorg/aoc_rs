@@ -1,3 +1,6 @@
+use std::fs::File;
+use std::io::{BufRead, BufReader};
+
 #[derive(Debug)]
 struct Line {
     values: Vec<i32>,
@@ -6,6 +9,28 @@ struct Line {
 #[derive(Debug)]
 struct Report {
     lines: Vec<Line>,
+}
+
+impl Report {
+    fn load(filename: &str) -> Self {
+        let file = File::open(filename).unwrap();
+        let reader = BufReader::new(file);
+        let mut lines: Vec<Line> = vec![];
+
+        for (_index, line) in reader.lines().enumerate() {
+            let item = &line.unwrap();
+            let l = Line::new(item);
+            lines.push(l);
+        }
+        Self { lines }
+    }
+    fn process(&self) -> i32 {
+        let mut ret = 0;
+        for l in &self.lines {
+            ret += l.extrapolate();
+        }
+        ret
+    }
 }
 
 impl Line {
@@ -58,6 +83,11 @@ mod tests {
     use super::*;
 
     #[test]
+    fn test_process() {
+        assert_eq!(Report::load("example.txt").process(), 114);
+    }
+
+    #[test]
     fn test_extrapolate() {
         assert_eq!(Line::new("0 3 6 9 12 15").extrapolate(), 18);
         assert_eq!(Line::new("1 3 6 10 15 21").extrapolate(), 28);
@@ -88,5 +118,8 @@ mod tests {
 }
 
 fn main() {
-    println!("Hello, world!");
+    println!(
+        "day9/part1={}",
+        Report::load("2023/day09/input.txt").process()
+    );
 }
