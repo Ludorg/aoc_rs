@@ -69,8 +69,8 @@ fn extrapolate_step(vec_in: &Vec<i32>) -> Vec<i32> {
     ret
 }
 
-fn is_sequence_zero(vec_in: &Vec<i32>) -> bool {
-    for i in vec_in.into_iter() {
+fn is_sequence_zero(vec_in: &[i32]) -> bool {
+    for i in vec_in.iter() {
         if *i != 0 {
             return false;
         }
