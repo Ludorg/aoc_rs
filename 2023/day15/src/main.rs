@@ -22,11 +22,8 @@ fn compute_line(s: &str) -> u32 {
 fn compute_file(filename: &str) -> u32 {
     let file = File::open(filename).unwrap();
     let reader = BufReader::new(file);
-
-    for (_index, line) in reader.lines().enumerate() {
-        let item = &line.unwrap();
-
-        return compute_line(item.as_str());
+    if let Some((_index, line)) = reader.lines().enumerate().next() {
+        return compute_line(line.unwrap().as_str());
     }
     0
 }
