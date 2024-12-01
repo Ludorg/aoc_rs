@@ -40,5 +40,14 @@ fn main() {
         sum += d;
         println!("distance={d}")
     }
-    println!("total distance={sum}")
+    println!("total distance={sum}");
+
+    // part 2
+    let mut sum = 0;
+    for left in vec1 {
+        let similarity_score = (vec2.iter().filter(|&n| *n == left).count() as i32) * left;
+        println!("similarity_score={similarity_score}");
+        sum += similarity_score;
+    }
+    println!("sum of similarity scores={sum}");
 }
