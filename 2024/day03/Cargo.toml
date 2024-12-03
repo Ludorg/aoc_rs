@@ -1,0 +1,9 @@
+[package]
+name = "day03"
+version = "0.1.0"
+edition = "2021"
+publish = ["artifactory-carma"]
+
+[dependencies]
+
+regex="1"
