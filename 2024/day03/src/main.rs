@@ -12,32 +12,38 @@ fn main() -> io::Result<()> {
     let reader = io::BufReader::new(file);
 
     // Define the regex pattern to match "mul(x, y)"
-    let pattern = r"mul\s*\(\s*(\d+)\s*,\s*(\d+)\s*\)";
+    let pattern = r"mul\s*\(\s*(\d+)\s*,\s*(\d+)\s*\)|do\(\)|don't\(\)";
     let re = Regex::new(pattern).unwrap();
     let mut total_sum = 0;
 
     // Initialize a variable to keep track of the total sum
     // Read lines from the file and process each line
-
+    let mut mul_enabled = true;
     for line in reader.lines() {
         let line = line?;
 
         // Find all matches of the regex pattern in the line
         for captures in re.captures_iter(&line) {
-            let num1: i32 = captures[1].parse().unwrap();
+            if captures[0].contains("don't") {
+                println!("{:?}", captures);
+                mul_enabled = false;
+                continue;
+            }
+            if captures[0].contains("do") {
+                println!("{:?}", captures);
+                mul_enabled = true;
+                continue;
+            }
+            if mul_enabled {
+                let num2: i32 = captures[2].parse().unwrap();
+                let num1: i32 = captures[1].parse().unwrap();
+                // Multiply the captured numbers
+                let product = num1 * num2;
 
-            // First captured group
-            let num2: i32 = captures[2].parse().unwrap();
+                println!("Captured: {} and {} => Product: {}", num1, num2, product);
 
-            // Second captured group
-            let product = num1 * num2;
-
-            // Multiply the captured numbers
-            println!("Captured: {} and {} => Product: {}", num1, num2, product);
-
-            total_sum += product;
-
-            // Add the product to the total sum
+                total_sum += product;
+            }
         }
     }
 
