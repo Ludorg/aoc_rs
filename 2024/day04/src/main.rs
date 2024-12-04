@@ -152,10 +152,8 @@ impl Puzzle {
         let mut count = 0;
         for i in 0..self.height {
             for j in 0..self.width {
-                if self.data[i][j] == 'A' {
-                    if self.check_ms(i, j) {
-                        count += 1;
-                    }
+                if self.data[i][j] == 'A' && self.check_ms(i, j) {
+                    count += 1;
                 }
             }
         }
