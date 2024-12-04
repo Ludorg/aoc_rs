@@ -6,7 +6,6 @@
 
 
 Link to repos of Rustacean colleagues:
-
 - [René](https://github.com/rene-d/advent-of-rust/)
 - [pocketsize-pi](https://github.com/pocketsize-pi/AoC2024)
 - [Renzo](https://github.com/L4pr/AOC-2024-rust)
@@ -16,11 +15,11 @@ Link to repos of Rustacean colleagues:
 
 ## My Advance for 2024
 
-| Day | Step 1 | Step 2 |
-| :-: | :----: | :----: |
-|  [01](./day01/)  | ⭐ | ⭐ |
-|  [02](./day02/)  | ⭐ | ⭐ |
-|  [03](./day03/)  | ⭐ | ⭐ |
-|  [04](./day04/)  | ⭐ | ⭐ |
-|  05  |   |    |
-|  06  |   |    |
+Puzzle | My Solution for the Day | Stars
+| -- | ----              | :----: 
+| [Historian Hysteria](https://adventofcode.com/2024/day/1) |  [2024/day01](./day01/)  | ⭐⭐ |
+| [Red-Nosed Reports](https://adventofcode.com/2024/day/2) |  [2024/day02](./day02/)  | ⭐⭐ |
+| [Mull It Over](https://adventofcode.com/2024/day/3) |  [2024/day03](./day03/)  | ⭐⭐ |
+| [Ceres Search](https://adventofcode.com/2024/day/4) | [2024/day04](./day04/)  | ⭐⭐ |
+|    |   |    |
+

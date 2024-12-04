@@ -10,4 +10,4 @@ This repo stores my progress in Rust for :
 - [Advent of Code 2021](./2021)
 - [Advent of Code 2022](./2022)
 - [Advent of Code 2023](./2023)
-- [Advent of Code 2023](./2024)
+- [Advent of Code 2024](./2024)
