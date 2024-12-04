@@ -1,4 +1,4 @@
-# [Advent of Code 2024](https://adventofcode.com/2023) in Rust 🦀
+# [Advent of Code 2024](https://adventofcode.com/2024) in Rust 🦀
 
 ![AoC2024](https://img.shields.io/badge/Advent_of_Code-2024-blue)
 ![Stars: 8](https://img.shields.io/badge/Stars-8%20%20⭐-darkorchid)
@@ -21,5 +21,5 @@ Puzzle | My Solution for the Day | Stars
 | [Red-Nosed Reports](https://adventofcode.com/2024/day/2) |  [2024/day02](./day02/)  | ⭐⭐ |
 | [Mull It Over](https://adventofcode.com/2024/day/3) |  [2024/day03](./day03/)  | ⭐⭐ |
 | [Ceres Search](https://adventofcode.com/2024/day/4) | [2024/day04](./day04/)  | ⭐⭐ |
-|    |   |    |
+
 

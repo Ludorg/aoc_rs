@@ -1,9 +1,11 @@
+//! [Advent of Code 2024 Day 1: Historian Hysteria](https://adventofcode.com/2024/day/1)
+
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
 fn main() {
-    //let filename = "2024/day01/test.txt";
-    let filename = "2024/day01/input.txt";
+    let filename = "2024/day01/test.txt";
+    //let filename = "2024/day01/input.txt";
     let file = File::open(filename).unwrap();
     let reader = BufReader::new(file);
 

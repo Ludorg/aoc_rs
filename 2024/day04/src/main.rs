@@ -1,3 +1,5 @@
+//! [Advent of Code 2024 Day 4: Ceres Search](https://adventofcode.com/2024/day/4)
+
 use std::{
     fs::File,
     io::{BufRead, BufReader},
@@ -170,8 +172,8 @@ impl Puzzle {
 }
 
 fn main() {
-    let filename = "2024/day04/input.txt";
-    //let filename = "2024/day04/test.txt";
+    //let filename = "2024/day04/input.txt";
+    let filename = "2024/day04/test.txt";
     let mut p: Puzzle = Puzzle::new();
     p.load(filename);
     //println!("{:?}", p);

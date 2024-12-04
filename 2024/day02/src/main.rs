@@ -1,3 +1,5 @@
+//! [Advent of Code 2024 Day 2: Red-Nosed Reports](https://adventofcode.com/2024/day/2)
+
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
@@ -38,14 +40,14 @@ fn is_safe_2(v: &Vec<i32>) -> bool {
         if is_safe(&v2) == true {
             println!("is safe");
             return true;
-        }        
+        }
     }
     false
 }
 
 fn main() {
-    //let filename = "2024/day02/test.txt";
-    let filename = "2024/day02/input.txt";
+    let filename = "2024/day02/test.txt";
+    //let filename = "2024/day02/input.txt";
     let file = File::open(filename).unwrap();
     let reader = BufReader::new(file);
     let mut safe_reports = 0;

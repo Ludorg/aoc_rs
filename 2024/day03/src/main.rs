@@ -1,3 +1,5 @@
+//! [Advent of Code 2024 Day 3: Mull It Over](https://adventofcode.com/2024/day/3)
+
 use regex::Regex;
 use std::fs::File;
 use std::io::{self, BufRead};
@@ -11,12 +13,13 @@ fn main() -> io::Result<()> {
     let file = File::open(&path)?;
     let reader = io::BufReader::new(file);
 
-    // Define the regex pattern to match "mul(x, y)"
+    // Define the regex pattern to match "mul(x, y) or do() or don't()"
     let pattern = r"mul\s*\(\s*(\d+)\s*,\s*(\d+)\s*\)|do\(\)|don't\(\)";
     let re = Regex::new(pattern).unwrap();
-    let mut total_sum = 0;
 
     // Initialize a variable to keep track of the total sum
+    let mut total_sum = 0;
+
     // Read lines from the file and process each line
     let mut mul_enabled = true;
     for line in reader.lines() {
