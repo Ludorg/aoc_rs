@@ -38,23 +38,35 @@ impl Puzzle {
 
     fn count_straight(&self, i: usize, j: usize) -> i32 {
         let mut straight = 0;
-        if j + 3 < self.width && self.data[i][j + 1] == 'M'
-                && self.data[i][j + 2] == 'A' && self.data[i][j + 3] == 'S' {
+        if j + 3 < self.width
+            && self.data[i][j + 1] == 'M'
+            && self.data[i][j + 2] == 'A'
+            && self.data[i][j + 3] == 'S'
+        {
             straight += 1
         }
 
-        if j >= 3 && self.data[i][j - 1] == 'M'
-                && self.data[i][j - 2] == 'A' && self.data[i][j - 3] == 'S' {
+        if j >= 3
+            && self.data[i][j - 1] == 'M'
+            && self.data[i][j - 2] == 'A'
+            && self.data[i][j - 3] == 'S'
+        {
             straight += 1
         }
 
-        if i + 3 < self.height && self.data[i + 1][j] == 'M'
-                && self.data[i + 2][j] == 'A' && self.data[i + 3][j] == 'S' {
+        if i + 3 < self.height
+            && self.data[i + 1][j] == 'M'
+            && self.data[i + 2][j] == 'A'
+            && self.data[i + 3][j] == 'S'
+        {
             straight += 1
         }
 
-        if i >= 3 && self.data[i - 1][j] == 'M'
-                && self.data[i - 2][j] == 'A' && self.data[i - 3][j] == 'S' {
+        if i >= 3
+            && self.data[i - 1][j] == 'M'
+            && self.data[i - 2][j] == 'A'
+            && self.data[i - 3][j] == 'S'
+        {
             straight += 1
         }
 
@@ -63,23 +75,39 @@ impl Puzzle {
 
     fn count_diagonal(&self, i: usize, j: usize) -> i32 {
         let mut diagonal = 0;
-        if i + 3 < self.height && j + 3 < self.width && self.data[i + 1][j + 1] == 'M'
-                && self.data[i + 2][j + 2] == 'A' && self.data[i + 3][j + 3] == 'S' {
+        if i + 3 < self.height
+            && j + 3 < self.width
+            && self.data[i + 1][j + 1] == 'M'
+            && self.data[i + 2][j + 2] == 'A'
+            && self.data[i + 3][j + 3] == 'S'
+        {
             diagonal += 1
         }
 
-        if i >= 3 && j >= 3 && self.data[i - 1][j - 1] == 'M'
-                && self.data[i - 2][j - 2] == 'A' && self.data[i - 3][j - 3] == 'S' {
+        if i >= 3
+            && j >= 3
+            && self.data[i - 1][j - 1] == 'M'
+            && self.data[i - 2][j - 2] == 'A'
+            && self.data[i - 3][j - 3] == 'S'
+        {
             diagonal += 1
         }
 
-        if i + 3 < self.height && j >= 3 && self.data[i + 1][j - 1] == 'M'
-                && self.data[i + 2][j - 2] == 'A' && self.data[i + 3][j - 3] == 'S' {
+        if i + 3 < self.height
+            && j >= 3
+            && self.data[i + 1][j - 1] == 'M'
+            && self.data[i + 2][j - 2] == 'A'
+            && self.data[i + 3][j - 3] == 'S'
+        {
             diagonal += 1
         }
 
-        if i >= 3 && j + 3 < self.width && self.data[i - 1][j + 1] == 'M'
-                && self.data[i - 2][j + 2] == 'A' && self.data[i - 3][j + 3] == 'S' {
+        if i >= 3
+            && j + 3 < self.width
+            && self.data[i - 1][j + 1] == 'M'
+            && self.data[i - 2][j + 2] == 'A'
+            && self.data[i - 3][j + 3] == 'S'
+        {
             diagonal += 1
         }
 
