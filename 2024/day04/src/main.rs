@@ -23,7 +23,7 @@ impl Puzzle {
         self.height = self.data.len();
     }
 
-    fn count_xmas(self) -> i32 {
+    fn count_xmas(&self) -> i32 {
         let mut count = 0;
         for i in 0..self.height {
             for j in 0..self.width {
@@ -114,6 +114,54 @@ impl Puzzle {
         diagonal
     }
 
+    fn check_ms(&self, i: usize, j: usize) -> bool {
+        if i >= 1 && j >= 1 && i < self.height - 1 && j < self.width - 1 {
+            if self.data[i - 1][j - 1] == 'M'
+                && self.data[i + 1][j + 1] == 'S'
+                && self.data[i + 1][j - 1] == 'M'
+                && self.data[i - 1][j + 1] == 'S'
+            {
+                return true;
+            }
+            if self.data[i - 1][j - 1] == 'S'
+                && self.data[i + 1][j + 1] == 'M'
+                && self.data[i + 1][j - 1] == 'M'
+                && self.data[i - 1][j + 1] == 'S'
+            {
+                return true;
+            }
+            if self.data[i - 1][j - 1] == 'M'
+                && self.data[i + 1][j + 1] == 'S'
+                && self.data[i + 1][j - 1] == 'S'
+                && self.data[i - 1][j + 1] == 'M'
+            {
+                return true;
+            }
+            if self.data[i - 1][j - 1] == 'S'
+                && self.data[i + 1][j + 1] == 'M'
+                && self.data[i + 1][j - 1] == 'S'
+                && self.data[i - 1][j + 1] == 'M'
+            {
+                return true;
+            }
+        }
+        false
+    }
+
+    fn count_xmas_part2(&self) -> i32 {
+        let mut count = 0;
+        for i in 0..self.height {
+            for j in 0..self.width {
+                if self.data[i][j] == 'A' {
+                    if self.check_ms(i, j) {
+                        count += 1;
+                    }
+                }
+            }
+        }
+        count
+    }
+
     fn new() -> Self {
         Self {
             data: vec![],
@@ -128,7 +176,8 @@ fn main() {
     //let filename = "2024/day04/test.txt";
     let mut p: Puzzle = Puzzle::new();
     p.load(filename);
-    println!("{:?}", p);
+    //println!("{:?}", p);
 
     println!("XMAS count={:?}", p.count_xmas());
+    println!("XMAS count part 2={:?}", p.count_xmas_part2());
 }
