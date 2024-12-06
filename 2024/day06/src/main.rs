@@ -7,7 +7,7 @@ use std::{
     usize,
 };
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct Puzzle {
     data: Vec<Vec<char>>,
     width: usize,
@@ -120,6 +120,50 @@ impl Puzzle {
         }
         positions.len() as i32
     }
+
+    fn part2(&self) -> i32 {
+        let mut count = 0;
+
+        for i in 0..self.height {
+            for j in 0..self.width {
+                if self.data[i][j] == '.' {
+                    // clone the puzzle to add an obstacle in the cloned data
+                    let mut clone = self.clone();
+                    clone.data[i][j] = '#';
+
+                    // do part1 job on the cloned data, but exit when a loop is met
+                    let mut cur = clone.find_start();
+                    let mut dir = char_to_direction(&clone.data[cur.0][cur.1]);
+
+                    // a loop is the same position, with the same direction
+                    // map pos_dir is the loop detector
+                    let mut pos_dir = HashMap::new();
+
+                    // part 1 job
+                    while dir != Direction::Exit {
+                        let next = clone.get_next(cur, dir);
+                        //println!("{count} cur={:?}, dir={:?}, next={:?}", cur, dir, next);
+
+                        cur = next.0;
+                        dir = next.1;
+
+                        // check if a loop is detected
+                        if pos_dir.contains_key(&cur) {
+                            if pos_dir.get(&cur) == Some(&dir) {
+                                println!("same position and same direction => in a loop");
+                                count += 1;
+                                // exit the 'part1 job' while loop
+                                dir = Direction::Exit;
+                            }
+                        } else {
+                            pos_dir.insert(cur, dir);
+                        }
+                    }
+                }
+            }
+        }
+        count
+    }
 }
 
 fn main() {
@@ -135,4 +179,7 @@ fn main() {
 
     let res = p.part1();
     println!("p1 result is {:?}", res);
+
+    let res = p.part2();
+    println!("p2 result is {:?}", res);
 }
