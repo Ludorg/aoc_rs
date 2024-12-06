@@ -1,8 +1,8 @@
 # [Advent of Code 2024](https://adventofcode.com/2024) in Rust 🦀
 
 ![AoC2024](https://img.shields.io/badge/Advent_of_Code-2024-blue)
-![Stars: 8](https://img.shields.io/badge/Stars-8%20%20⭐-darkorchid)
-![Rust: 4](https://img.shields.io/badge/Rust-4-aquamarine?logo=Rust)
+![Stars: 9](https://img.shields.io/badge/Stars-9%20%20⭐-darkorchid)
+![Rust: 5](https://img.shields.io/badge/Rust-5-aquamarine?logo=Rust)
 
 
 Link to repos of Rustacean colleagues:
@@ -21,5 +21,9 @@ Puzzle | My Solution for the Day | Stars
 | [Red-Nosed Reports](https://adventofcode.com/2024/day/2) |  [2024/day02](./day02/)  | ⭐⭐ |
 | [Mull It Over](https://adventofcode.com/2024/day/3) |  [2024/day03](./day03/)  | ⭐⭐ |
 | [Ceres Search](https://adventofcode.com/2024/day/4) | [2024/day04](./day04/)  | ⭐⭐ |
+| [Ceres Search](https://adventofcode.com/2024/day/4) | [2024/day04](./day04/)  | ⭐⭐ |
+| [Print Queue](https://adventofcode.com/2024/day/5) |  |  |
+| [Guard Gallivant](https://adventofcode.com/2024/day/6) | [2024/day06](./day06/)  | ⭐ |
+
 
 
