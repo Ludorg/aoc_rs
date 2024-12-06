@@ -1,7 +1,7 @@
 //! [Advent of Code 2024 Day 6: Guard Gallivant](https://adventofcode.com/2024/day/6)
 
 use std::{
-    collections::HashMap,
+    collections::{hash_map::Entry::Vacant, HashMap},
     fs::File,
     io::{BufRead, BufReader},
     usize,
@@ -148,15 +148,13 @@ impl Puzzle {
                         dir = next.1;
 
                         // check if a loop is detected
-                        if pos_dir.contains_key(&cur) {
-                            if pos_dir.get(&cur) == Some(&dir) {
-                                println!("same position and same direction => in a loop");
-                                count += 1;
-                                // exit the 'part1 job' while loop
-                                dir = Direction::Exit;
-                            }
-                        } else {
-                            pos_dir.insert(cur, dir);
+                        if let Vacant(e) = pos_dir.entry(cur) {
+                            e.insert(dir);
+                        } else if pos_dir.get(&cur) == Some(&dir) {
+                            println!("same position and same direction => in a loop");
+                            count += 1;
+                            // exit the 'part1 job' while loop
+                            dir = Direction::Exit;
                         }
                     }
                 }
