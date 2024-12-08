@@ -139,14 +139,13 @@ impl Puzzle {
                 return true;
             }
         }
-
         false
     }
 }
 
 fn main() {
-    //let filename = "2024/day07/test.txt";
-    let filename = "2024/day07/input.txt";
+    let filename = "2024/day07/test.txt";
+    //let filename = "2024/day07/input.txt";
     let mut p: Puzzle = Puzzle::new();
 
     let _ = p.load(filename);
