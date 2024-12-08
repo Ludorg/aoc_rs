@@ -1,7 +1,7 @@
 //! [Advent of Code 2024 Day 7: Bridge Repair](https://adventofcode.com/2024/day/7)
 
 use std::{
-    collections::{vec_deque, VecDeque},
+    collections::VecDeque,
     fs::File,
     io::{self, BufRead, BufReader},
 };
@@ -44,7 +44,6 @@ impl Puzzle {
         let file = File::open(filename).unwrap();
         let reader = BufReader::new(file);
         self.data = Vec::new();
-        let mut idx = 0;
 
         for line in reader.lines() {
             let line = line?;
@@ -54,16 +53,14 @@ impl Puzzle {
 
             let test_value: i64 = t.trim().parse().unwrap();
             let mut numbers: VecDeque<i64> = VecDeque::new();
-            for i in 1..parts.len() {
-                numbers.push_back(parts[i].parse().unwrap());
+            for p in parts.iter().skip(1) {
+                numbers.push_back(p.parse().unwrap());
             }
 
             self.data.push(Equation {
                 test_value,
                 numbers,
             });
-
-            idx += 1;
         }
         Ok(())
     }
@@ -75,7 +72,7 @@ impl Puzzle {
     fn part1(&self) -> i64 {
         let mut r = 0;
         for e in &self.data {
-            if Self::is_equation_valid(&e, false) {
+            if Self::is_equation_valid(e, false) {
                 r += e.test_value;
             }
         }
@@ -85,7 +82,7 @@ impl Puzzle {
     fn part2(&self) -> i64 {
         let mut r = 0;
         for e in &self.data {
-            if Self::is_equation_valid(&e, true) {
+            if Self::is_equation_valid(e, true) {
                 r += e.test_value;
             }
         }
@@ -97,7 +94,7 @@ impl Puzzle {
         // there is 2^n-1 combinations to test in part 1
         // 3^n-1 in part2
         let n = e.numbers.len();
-        let nb_op = if part2 == false { 2_u32 } else { 3_u32 };
+        let nb_op = if !part2 { 2_u32 } else { 3_u32 };
         let max = nb_op.pow(n as u32 - 1);
         println!("testing {max} combinations");
 
@@ -116,19 +113,17 @@ impl Puzzle {
                     // print!("|");
                     c.push(Operation::Concat);
                 }
-                i = i / nb_op;
+                i /= nb_op;
             }
             // println!("");
             operations.push(c);
         }
         // println!("{:?}", operations);
 
-        for i in 0..max as usize {
+        for ops in operations.iter_mut().take(max as usize) {
             let mut nums = e.numbers.clone();
-            let mut res = 0;
-
-            res = compute(
-                &operations[i].pop().unwrap(),
+            let mut res = compute(
+                &ops.pop().unwrap(),
                 &nums.pop_front().unwrap(),
                 &nums.pop_front().unwrap(),
             );
@@ -136,11 +131,7 @@ impl Puzzle {
                 if nums.is_empty() {
                     break;
                 }
-                res = compute(
-                    &operations[i].pop().unwrap(),
-                    &res,
-                    &nums.pop_front().unwrap(),
-                );
+                res = compute(&ops.pop().unwrap(), &res, &nums.pop_front().unwrap());
             }
             // println!("res={res}");
             if res == e.test_value {
@@ -158,9 +149,9 @@ fn main() {
     let filename = "2024/day07/input.txt";
     let mut p: Puzzle = Puzzle::new();
 
-    p.load(filename);
+    let _ = p.load(filename);
     println!("{:?}", p);
 
-    //println!("part1 = {:?}", p.part1());
+    println!("part1 = {:?}", p.part1());
     println!("part2 = {:?}", p.part2());
 }
