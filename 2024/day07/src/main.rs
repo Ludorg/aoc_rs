@@ -20,12 +20,22 @@ struct Puzzle {
 enum Operation {
     Add,
     Mul,
+    Concat,
 }
 
 fn compute(o: &Operation, a: &i64, b: &i64) -> i64 {
     match o {
         Operation::Add => a + b,
         Operation::Mul => a * b,
+        Operation::Concat => {
+            let mut digits = 1;
+            let mut temp = *b;
+            while temp >= 10 {
+                temp /= 10;
+                digits *= 10;
+            }
+            a * (digits * 10) + b
+        }
     }
 }
 
@@ -62,43 +72,58 @@ impl Puzzle {
         Self { data: vec![] }
     }
 
-    fn part1(self) -> i64 {
+    fn part1(&self) -> i64 {
         let mut r = 0;
-        for e in self.data {
-            if Self::is_equation_valid(&e) {
+        for e in &self.data {
+            if Self::is_equation_valid(&e, false) {
                 r += e.test_value;
             }
         }
         r
     }
 
-    fn is_equation_valid(e: &Equation) -> bool {
+    fn part2(&self) -> i64 {
+        let mut r = 0;
+        for e in &self.data {
+            if Self::is_equation_valid(&e, true) {
+                r += e.test_value;
+            }
+        }
+        r
+    }
+
+    fn is_equation_valid(e: &Equation, part2: bool) -> bool {
         // n is length of numbers in equation
-        // there is 2^n-1 combinations to test
+        // there is 2^n-1 combinations to test in part 1
+        // 3^n-1 in part2
         let n = e.numbers.len();
-        let max = 2u32.pow(n as u32 - 1);
-        // println!("testing {max} combinations");
+        let nb_op = if part2 == false { 2_u32 } else { 3_u32 };
+        let max = nb_op.pow(n as u32 - 1);
+        println!("testing {max} combinations");
 
         let mut operations: Vec<Vec<Operation>> = vec![];
 
         for mut i in 0..max {
             let mut c: Vec<Operation> = vec![];
             for _ in 0..e.numbers.len() - 1 {
-                if i % 2 == 0 {
+                if i % nb_op == 0 {
                     // print!("+");
                     c.push(Operation::Add);
-                } else {
+                } else if i % nb_op == 1 {
                     // print!("*");
                     c.push(Operation::Mul);
+                } else {
+                    // print!("|");
+                    c.push(Operation::Concat);
                 }
-                i = i / 2;
+                i = i / nb_op;
             }
             // println!("");
             operations.push(c);
         }
         // println!("{:?}", operations);
 
-        for mut i in 0..max as usize {
+        for i in 0..max as usize {
             let mut nums = e.numbers.clone();
             let mut res = 0;
 
@@ -136,5 +161,6 @@ fn main() {
     p.load(filename);
     println!("{:?}", p);
 
-    println!("part1 = {:?}", p.part1());
+    //println!("part1 = {:?}", p.part1());
+    println!("part2 = {:?}", p.part2());
 }

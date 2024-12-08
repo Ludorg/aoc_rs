@@ -1,11 +1,11 @@
 # [Advent of Code 2024](https://adventofcode.com/2024) in Rust 🦀
 
 ![AoC2024](https://img.shields.io/badge/Advent_of_Code-2024-blue)
-![Stars: 9](https://img.shields.io/badge/Stars-10%20⭐-darkorchid)
-![Rust: 5](https://img.shields.io/badge/Rust-5-aquamarine?logo=Rust)
+![Stars: 9](https://img.shields.io/badge/Stars-12%20⭐-darkorchid)
+![Rust: 5](https://img.shields.io/badge/Rust-6-aquamarine?logo=Rust)
 
 
-Link to repos of Rustacean colleagues:
+Link to Github repos of Rustacean colleagues:
 - [René](https://github.com/rene-d/advent-of-rust/)
 - [pocketsize-pi](https://github.com/pocketsize-pi/AoC2024)
 - [Renzo](https://github.com/L4pr/AOC-2024-rust)
@@ -23,6 +23,7 @@ Puzzle of the Day | My Solution | Stars
 | [04: Ceres Search](https://adventofcode.com/2024/day/4) | [2024/day04](./day04/)  | ⭐⭐ |
 | [05: Print Queue](https://adventofcode.com/2024/day/5) |  |  |
 | [06: Guard Gallivant](https://adventofcode.com/2024/day/6) | [2024/day06](./day06/)  | ⭐⭐ |
-
+| [07: Bridge Repair](https://adventofcode.com/2024/day/7) | [2024/day07](./day07/)  | ⭐⭐ |
+| [08: Resonant Collinearity](https://adventofcode.com/2024/day/8) |  |  |
 
 
