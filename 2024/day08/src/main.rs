@@ -1,10 +1,10 @@
 //! [Advent of Code 2024 Day 8: Resonant Collinearity](https://adventofcode.com/2024/day/8)
 
+use itertools::Itertools;
 use std::{
     collections::HashMap,
     fs::File,
     io::{BufRead, BufReader},
-    usize,
 };
 
 #[derive(Debug)]
@@ -45,14 +45,51 @@ impl Puzzle {
         ret
     }
 
-    fn find_antinodes_nb(&self) -> isize {
-        let v = self.find_antennas();
-        // for c in v {
-        //     let diff = c.1
-        // }
-        
+    fn find_antinode_coord(
+        p1: &(isize, isize),
+        p2: &(isize, isize),
+        h: isize,
+        w: isize,
+    ) -> Vec<(isize, isize)> {
+        let mut ret = Vec::new();
 
-        v.len() as isize
+        let dx = p2.0 - p1.0;
+        let dy = p2.1 - p1.1;
+        if p1.0 - dx >= 0 && p1.0 - dx < w && p1.1 - dy >= 0 && p1.1 - dy < h {
+            ret.push((p1.0 - dx, p1.1 - dy));
+        }
+        if p2.0 + dx >= 0 && p2.0 + dx < w && p2.1 + dy >= 0 && p2.1 + dy < h {
+            ret.push((p2.0 + dx, p2.1 + dy));
+        }
+
+        ret
+    }
+
+    fn find_antinodes_nb(&self) -> isize {
+        let mut antinode_pos = HashMap::new();
+        let antennas = self.find_antennas();
+
+        for antenna in &antennas {
+            let pos = antenna.1;
+            for c in pos.iter().combinations(2) {
+                println!("combinaison={:?}", c);
+
+                let p1 = c[0];
+                let p2 = c[1];
+                let coord = Self::find_antinode_coord(
+                    p1,
+                    p2,
+                    self.grid_height as isize,
+                    self.grid_width as isize,
+                );
+                println!("coord={:?}", coord);
+                for a_pos in coord {
+                    antinode_pos.insert(a_pos, true);
+                }
+            }
+        }
+
+        antinode_pos.len() as isize
     }
 
     fn part1(&self) -> isize {
