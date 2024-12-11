@@ -1,6 +1,6 @@
 # [Advent of Code](https://adventofcode.com) in Rust 🦀
 
-![Stars: 37](https://img.shields.io/badge/Stars-37%20⭐-darkorchid)
+![Stars: 38](https://img.shields.io/badge/Stars-38%20⭐-darkorchid)
 
 
 

@@ -1,8 +1,8 @@
 # [Advent of Code 2024](https://adventofcode.com/2024) in Rust 🦀
 
 ![AoC2024](https://img.shields.io/badge/Advent_of_Code-2024-blue)
-![Stars: 13](https://img.shields.io/badge/Stars-13%20⭐-darkorchid)
-![Rust: 7](https://img.shields.io/badge/Rust-7-aquamarine?logo=Rust)
+![Stars: 14](https://img.shields.io/badge/Stars-14%20⭐-darkorchid)
+![Rust: 8](https://img.shields.io/badge/Rust-8-aquamarine?logo=Rust)
 
 
 Link to Github repos of Rustacean colleagues:
@@ -27,5 +27,5 @@ Puzzle of the Day | My Solution | Stars
 | [08: Resonant Collinearity](https://adventofcode.com/2024/day/8) | [2024/day08](./day08/)  | ⭐ |
 | [09: Disk Fragmenter](https://adventofcode.com/2024/day/9) |   |  |
 | [10: Hoof It](https://adventofcode.com/2024/day/10) |   |  |
-| [11: Plutonian Pebbles](https://adventofcode.com/2024/day/8) |   |  |
+| [11: Plutonian Pebbles](https://adventofcode.com/2024/day/11) |  [2024/day11](./day11/) | ⭐ |
 
