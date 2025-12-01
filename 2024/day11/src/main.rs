@@ -62,11 +62,14 @@ fn apply_rules(v: VecDeque<i64>) -> VecDeque<i64> {
 
 fn main() {
     // part 1
-    let mut r1 = apply_rules(string_to_nums(&"125 17".to_string()));
-    for _ in 0..24 {
+    let mut r1 = apply_rules(string_to_nums(&"0 5601550 3914 852 50706 68 6 645371".to_string()));
+    for _ in 0..44 {
+        print!("/");
         r1 = apply_rules(r1);
         //println!("{:?}", r1);
+        print!("\\");
     }
+    println!("");
     println!("{:?}", r1.len());
 }
 
