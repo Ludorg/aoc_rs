@@ -1,6 +1,6 @@
 # [Advent of Code](https://adventofcode.com) in Rust 🦀
 
-![Stars: 38](https://img.shields.io/badge/Stars-38%20⭐-darkorchid)
+![Stars: 40](https://img.shields.io/badge/Stars-40%20⭐-darkorchid)
 
 
 
@@ -9,3 +9,4 @@ Merge of my repos [aoc_2021](https://github.com/Ludorg/aoc_2021_rs) and [aoc_202
 - [Advent of Code 2022](./2022)
 - [Advent of Code 2023](./2023)
 - [Advent of Code 2024](./2024)
+- [Advent of Code 2025](./2025)
