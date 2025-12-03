@@ -71,7 +71,7 @@ fn is_repeated_twice(n: u64) -> bool {
         return false;
     }
     let half = len / 2;
-    &s[..half] == &s[half..]
+    s[..half] == s[half..]
 }
 
 fn is_repeated_any(n: u64) -> bool {
@@ -91,7 +91,7 @@ fn is_repeated_any(n: u64) -> bool {
             continue;
         }
         // no leading-zero blocks allowed
-        if (&s[..h]).starts_with('0') {
+        if s[..h].starts_with('0') {
             continue;
         }
 
