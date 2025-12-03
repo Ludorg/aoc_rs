@@ -17,7 +17,6 @@ struct Data {
 }
 
 #[derive(Debug)]
-
 struct Puzzle {
     data: Vec<Data>,
 }
