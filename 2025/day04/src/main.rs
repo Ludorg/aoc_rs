@@ -71,6 +71,27 @@ impl Puzzle {
         count
     }
 
+    fn get_removable_rolls(&self) -> Vec<(usize, usize)> {
+        let mut out: Vec<(usize, usize)> = vec![];
+        for (x, row) in self.data.iter().enumerate() {
+            for y in 0..row.len() {
+                if self.data[x][y] == '@' {
+                    let neighbors = self.count_neighbouring_rolls(x as isize, y as isize);
+                    if neighbors < 4 {
+                        out.push((x, y));
+                    }
+                }
+            }
+        }
+        out
+    }
+
+    fn remove_rolls(&mut self, rolls: Vec<(usize, usize)>) {
+        for r in rolls {
+            self.data[r.0][r.1] = '.';
+        }
+    }
+
     fn part1(&self) -> u32 {
         let mut count: u32 = 0;
         for (x, row) in self.data.iter().enumerate() {
@@ -86,13 +107,44 @@ impl Puzzle {
         count
     }
 
-    fn part2(&self) -> u64 {
-        0
+    fn part2(&mut self) -> usize {
+        let mut out = 0;
+        loop {
+            let removable = self.get_removable_rolls();
+            if removable.len() == 0 {
+                break;
+            }
+            out += removable.len();
+            self.remove_rolls(removable);
+        }
+        out
     }
 }
 
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_part2() {
+        let mut puzzle = Puzzle { data: vec![] };
+        puzzle.load("test.txt");
+        assert_eq!(puzzle.part2(), 43);
+    }
+
+    #[test]
+    fn test_get_removable_rolls() {
+        let mut puzzle = Puzzle { data: vec![] };
+        puzzle.load("test.txt");
+        puzzle.print();
+
+        let removable = puzzle.get_removable_rolls();
+        assert_eq!(removable.len(), 13);
+        assert_eq!(removable[0], (0, 2));
+
+        puzzle.remove_rolls(removable);
+        println!("AFTER REMOVE");
+        puzzle.print();
+    }
 
     #[test]
     fn test_count_neighbouring_rolls() {
